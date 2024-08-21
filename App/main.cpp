@@ -10,12 +10,15 @@
 #include"heaptablemodel.h"
 #include"element.h"
 #include"fileobject.h"
+#include<QuickQanava.h>
 int main(int argc, char *argv[])
 {
     set_qt_environment();
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
+    engine.addPluginPath(QStringLiteral("../QuickQanava/src"));
+    QuickQanava::initialize(&engine);
     const QUrl url(mainQmlFile);
     HeapModel *heapModel = new HeapModel(&app);
     qmlRegisterSingletonInstance("HeapModel",1,0,"HeapModel",heapModel);

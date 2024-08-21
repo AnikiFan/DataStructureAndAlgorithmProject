@@ -19,7 +19,8 @@ import HeapTableModel
 import HeapModel
 import Element
 import FileObject
-
+import QuickQanava 2.0 as Qan
+import "qrc:/QuickQanava" as Qan
 Rectangle {
     id: mainWindow
     width: Constants.width
@@ -1077,6 +1078,7 @@ Rectangle {
             when: !menu.algoScene && menu.appScene
         }
     ]
+
 }
 
 /*##^##
