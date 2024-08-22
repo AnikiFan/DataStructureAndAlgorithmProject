@@ -30,7 +30,9 @@ qt_add_executable(${CMAKE_PROJECT_NAME}
     heaplistmodel.h heaplistmodel.cpp
     heaptablemodel.h heaptablemodel.cpp
     graphmodel.h graphmodel.cpp
-    personnode.h personnode.cpp)
+    personnode.h personnode.cpp
+    Array.h
+    Graph.h)
 qt_add_resources(${CMAKE_PROJECT_NAME} "configuration"
     PREFIX "/"
     FILES

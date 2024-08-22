@@ -390,7 +390,7 @@ public:
     bool                    setLineColor(const QColor& lineColor) noexcept;
     inline const QColor&    getLineColor() const noexcept { return _lineColor; }
 protected:
-    QColor                  _lineColor = QColor{0, 0, 0, 255};
+    QColor                  _lineColor = QColor{160, 160, 160, 255};
 signals:
     void                    lineColorChanged();
 

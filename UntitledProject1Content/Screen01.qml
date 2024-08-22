@@ -736,12 +736,12 @@ Rectangle {
           //connectorEnabled: true //允许通过拖拽生成新边
           Component.onCompleted: {    // Qan.Graph.Component.onCompleted()
               var n1 = graph.insertCustomNode()
-                 n1.label = "Hello World"; n1.item.x=50; n1.item.y= 50
+                 n1.label = 1; n1.item.x=50; n1.item.y= 50
                 n1.age = 24;n1.name='田所';n1.school='市西';n1.company='无'
                  var n2 = graph.insertCustomNode()
-                 n2.label = "Node 2"; n2.item.x=200; n2.item.y= 125
+                 n2.label = 2; n2.item.x=200; n2.item.y= 125
               var n3 = graph.insertCustomNode()
-                 n3.label = "test"; n1.item.x=150; n1.item.y= 150
+                 n3.label = 3; n1.item.x=150; n1.item.y= 150
                  //defaultEdgeStyle.lineType = Qan.EdgeStyle.Curved
               defaultEdgeStyle.srcShape = Qan.EdgeStyle.None
               defaultEdgeStyle.dstShape = Qan.EdgeStyle.None

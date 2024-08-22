@@ -12,10 +12,10 @@ Qan.NodeItem {
         Rectangle {
             id: background
             anchors.fill: parent
-            radius: parent.width/2; color: light
+            radius: parent.width/2
+            color: Number(node.label)===1?'red':'blue'
+            Component.onCompleted: {console.log(node.label)}
             border.color: "violet"; border.width: 5
-            readonly property color dark: "blue"
-            readonly property color light: "lightblue"
             Text{
                 anchors.centerIn: parent
                 text:"NAME"

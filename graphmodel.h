@@ -4,7 +4,7 @@
 #include <QGuiApplication>
 #include <QtQml>
 #include <QQuickStyle>
-
+#include "Graph.h"
 // QuickQanava headers
 #include <QuickQanava.h>
 class GraphModel : public qan::Graph {
@@ -14,7 +14,7 @@ public:
     virtual ~GraphModel() override  { /* Nil */ }
 private:
     GraphModel(const GraphModel &) = delete;
-
+    MyGraph<const char*> G;
 public:
     Q_INVOKABLE qan::Node*    insertCustomNode();
 };

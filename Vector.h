@@ -1,3 +1,5 @@
+#ifndef VECTOR_H
+#define VECTOR_H
 #include<stdexcept>
 /// @brief Vector类实现
 /// @tparam T
@@ -189,3 +191,4 @@ inline void Vector<T>::extend()
     elem = tmp;
     return;
 }
+#endif // VECTOR_H
