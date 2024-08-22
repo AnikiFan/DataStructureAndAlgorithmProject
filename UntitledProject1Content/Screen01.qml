@@ -19,6 +19,7 @@ import HeapTableModel
 import HeapModel
 import Element
 import FileObject
+//import QtQuick.Controls.Material
 import QuickQanava 2.0 as Qan
 import "qrc:/QuickQanava" as Qan
 Rectangle {
@@ -714,6 +715,92 @@ Rectangle {
         Keys.onUpPressed: vbar.decrease()
         Keys.onDownPressed: vbar.increase()
     }
+
+    Qan.GraphView {
+      id: graphView
+      visible:parent.state === 'app'
+      anchors.left:parent.left
+      anchors.right:parent.right
+      anchors.top:parent.top
+      anchors.bottom:controlPanel.top
+      navigable   : true
+      graph: Qan.Graph {
+          id: graph
+          //selectionPolicy: Qan.Graph.SelectOnClick //选择，可以用于选择详细说明的用户
+          //connectorEnabled: true //允许通过拖拽生成新边
+          Component.onCompleted: {    // Qan.Graph.Component.onCompleted()
+              var n1 = graph.insertNode()
+                 n1.label = "Hello World"; n1.item.x=50; n1.item.y= 50
+                 var n2 = graph.insertNode()
+                 n2.label = "Node 2"; n2.item.x=200; n2.item.y= 125
+
+                 var e = graph.insertEdge(n1, n2);
+                 defaultEdgeStyle.lineType = Qan.EdgeStyle.Curved
+          }
+          function notifyUser(message) { toolTip.text=message; toolTip.open() }
+          onNodeClicked: (node) => {
+              notifyUser( "Node <b>" + node.label + "</b> clicked" )
+              nodeEditor.node = node
+          }
+          onNodeRightClicked: (node) => { notifyUser( "Node <b>" + node.label + "</b> right clicked" ) }
+          onNodeDoubleClicked: (node) => { notifyUser( "Node <b>" + node.label + "</b> double clicked" ) }
+          onNodeMoved: (node) => { notifyUser("Node <b>" + node.label + "</b> moved") }
+        } // Qan.Graph: topology
+      ToolTip {
+          id: toolTip
+          timeout: 2500
+      }
+
+      Pane {
+          id: nodeEditor
+          property var node: undefined
+          onNodeChanged: nodeItem = node ? node.item : undefined
+          property var nodeItem: undefined
+          anchors.bottom: parent.bottom; anchors.bottomMargin: 15
+          anchors.right: parent.right; anchors.rightMargin: 15
+          padding: 0
+          Frame {
+              ColumnLayout {
+                  Label {
+                      text: nodeEditor.node ? "Editing node <b>" + nodeEditor.node.label + "</b>": "Select a node..."
+                  }
+                  CheckBox {
+                      text: "Draggable"
+                      enabled: nodeEditor.nodeItem !== undefined
+                      checked: nodeEditor.nodeItem ? nodeEditor.nodeItem.draggable : false
+                      onClicked: nodeEditor.nodeItem.draggable = checked
+                  }
+                  CheckBox {
+                      text: "Resizable"
+                      enabled: nodeEditor.nodeItem !== undefined
+                      checked: nodeEditor.nodeItem ? nodeEditor.nodeItem.resizable : false
+                      onClicked: nodeEditor.nodeItem.resizable = checked
+                  }
+                  CheckBox {
+                      text: "Selected (read-only)"
+                      enabled: false
+                      checked: nodeEditor.nodeItem ? nodeEditor.nodeItem.selected : false
+                  }
+                  CheckBox {
+                      text: "Selectable"
+                      enabled: nodeEditor.nodeItem != null
+                      checked: nodeEditor.nodeItem ? nodeEditor.nodeItem.selectable : false
+                      onClicked: nodeEditor.nodeItem.selectable = checked
+                  }
+                  Label { text: "style.backRadius" }
+                  Slider {
+                      from: 0.; to: 15.0;
+                      value: defaultNodeStyle.backRadius
+                      stepSize: 1.0
+                      onMoved: defaultNodeStyle.backRadius = value
+                  }
+              }
+          }
+      }
+      //onRightClicked: function(pos) {
+        //  contextMenu.open()
+      //}
+    } // Qan.GraphView    Qan.Graph {
     Rectangle {
         id: bluredBackground
         visible: controlPanel.questionOpen || controlPanel.importOpen || controlPanel.exportOpen

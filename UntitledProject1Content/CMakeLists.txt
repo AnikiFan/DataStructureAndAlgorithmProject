@@ -11,6 +11,7 @@ qt6_add_qml_module(UntitledProject1Content
 	QML_FILES
 		"App.qml"
 		"Screen01.qml"
+                "PersonNode.qml"
 	RESOURCES
 		"images/background.png"
 )
