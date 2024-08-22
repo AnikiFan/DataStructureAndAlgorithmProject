@@ -28,7 +28,9 @@ qt_add_executable(${CMAKE_PROJECT_NAME}
     formatter.h formatter.cpp
     heapmodel.h heapmodel.cpp
     heaplistmodel.h heaplistmodel.cpp
-    heaptablemodel.h heaptablemodel.cpp)
+    heaptablemodel.h heaptablemodel.cpp
+    graphmodel.h graphmodel.cpp
+    personnode.h personnode.cpp)
 qt_add_resources(${CMAKE_PROJECT_NAME} "configuration"
     PREFIX "/"
     FILES

@@ -19,6 +19,7 @@ import HeapTableModel
 import HeapModel
 import Element
 import FileObject
+import GraphModel
 //import QtQuick.Controls.Material
 import QuickQanava 2.0 as Qan
 import "qrc:/QuickQanava" as Qan
@@ -728,22 +729,24 @@ Rectangle {
       anchors.bottom:controlPanel.top
       navigable   : true
       grid:null
-      graph: Qan.Graph {
+      graph: GraphModel {
           id: graph
           property var personNode:Qt.createComponent('PersonNode.qml')
           //selectionPolicy: Qan.Graph.SelectOnClick //选择，可以用于选择详细说明的用户
           //connectorEnabled: true //允许通过拖拽生成新边
           Component.onCompleted: {    // Qan.Graph.Component.onCompleted()
-              var n1 = graph.insertNode(personNode)
+              var n1 = graph.insertCustomNode()
                  n1.label = "Hello World"; n1.item.x=50; n1.item.y= 50
-                 var n2 = graph.insertNode(personNode)
+                n1.age = 24;n1.name='田所';n1.school='市西';n1.company='无'
+                 var n2 = graph.insertCustomNode()
                  n2.label = "Node 2"; n2.item.x=200; n2.item.y= 125
-              var n3 = graph.insertNode(personNode)
+              var n3 = graph.insertCustomNode()
                  n3.label = "test"; n1.item.x=150; n1.item.y= 150
                  //defaultEdgeStyle.lineType = Qan.EdgeStyle.Curved
               defaultEdgeStyle.srcShape = Qan.EdgeStyle.None
               defaultEdgeStyle.dstShape = Qan.EdgeStyle.None
              defaultEdgeStyle.lineType=Qan.EdgeStyle.Curved
+              //defaultEdgeStyle.lineColor = Qt.rgba(1,0,0,1)
              selectionPolicy: Qan.Graph.SelectOnClick
               selectionDelegate = customSelectionComponent
           }

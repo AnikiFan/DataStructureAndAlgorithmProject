@@ -11,6 +11,7 @@
 #include"element.h"
 #include"fileobject.h"
 #include<QuickQanava.h>
+#include<graphmodel.h>
 int main(int argc, char *argv[])
 {
     set_qt_environment();
@@ -30,6 +31,8 @@ int main(int argc, char *argv[])
     FileObject *fileObject = new FileObject(heapModel,heapModel);
     qmlRegisterSingletonInstance("FileObject",1,0,"FileObject",fileObject);
 
+    qmlRegisterType<GraphModel>("GraphModel", 1, 0, "GraphModel");
+
     QObject::connect(
         &engine, &QQmlApplicationEngine::objectCreated, &app,
         [url](QObject *obj, const QUrl &objUrl) {
@@ -38,6 +41,7 @@ int main(int argc, char *argv[])
         }, Qt::QueuedConnection);
 
     engine.addImportPath(QCoreApplication::applicationDirPath() + "/qml");
+    qDebug()<<QCoreApplication::applicationDirPath();
     engine.addImportPath(":/");
     engine.load(url);
 
