@@ -715,7 +715,10 @@ Rectangle {
         Keys.onUpPressed: vbar.decrease()
         Keys.onDownPressed: vbar.increase()
     }
-
+    Component {
+        id: customSelectionComponent
+        SelectionDelegate { }
+    }
     Qan.GraphView {
       id: graphView
       visible:parent.state === 'app'
@@ -726,18 +729,66 @@ Rectangle {
       navigable   : true
       graph: Qan.Graph {
           id: graph
+          property var personNode:Qt.createComponent('PersonNode.qml')
           //selectionPolicy: Qan.Graph.SelectOnClick //选择，可以用于选择详细说明的用户
           //connectorEnabled: true //允许通过拖拽生成新边
           Component.onCompleted: {    // Qan.Graph.Component.onCompleted()
-              var n1 = graph.insertNode()
+              var n1 = graph.insertNode(personNode)
                  n1.label = "Hello World"; n1.item.x=50; n1.item.y= 50
-                 var n2 = graph.insertNode()
+                 var n2 = graph.insertNode(personNode)
                  n2.label = "Node 2"; n2.item.x=200; n2.item.y= 125
-
-                 var e = graph.insertEdge(n1, n2);
-                 defaultEdgeStyle.lineType = Qan.EdgeStyle.Curved
+              var n3 = graph.insertNode(personNode)
+                 n3.label = "test"; n1.item.x=150; n1.item.y= 150
+                 //defaultEdgeStyle.lineType = Qan.EdgeStyle.Curved
+              defaultEdgeStyle.srcShape = Qan.EdgeStyle.None
+              defaultEdgeStyle.dstShape = Qan.EdgeStyle.None
+             defaultEdgeStyle.lineType=Qan.EdgeStyle.Curved
+             selectionPolicy: Qan.Graph.SelectOnClick
+              selectionDelegate = customSelectionComponent
           }
+         connectorEnabled: true
+         connectorItem : Control {
+             anchors.fill: parent
+             hoverEnabled: true
+             visible: false              // SAMPLE: Do not forget to hide the custom connector item by default, visual connector will set visible to true on demand
+             ToolTip.visible: hovered &&
+                              ( !parent.connectorDragged || state === "HILIGHT" )
+             onStateChanged: {
+                 ToolTip.text = ( state === "HILIGHT" ? "Drop to connect" : "Drag on a target node" )
+             }
+             states: [
+                 State { name: "NORMAL"; PropertyChanges { target: flag; scale: 1.0 } },
+                 State { name: "HILIGHT"; PropertyChanges { target: flag; scale: 1.7 } }
+             ]
+             transitions: [
+                 Transition { from: "NORMAL"; to: "HILIGHT"; PropertyAnimation { target: flag; properties: "borderWidth, scale"; duration: 100 } },
+                 Transition { from: "HILIGHT"; to: "NORMAL"; PropertyAnimation { target: flag; properties: "borderWidth, scale"; duration: 150 } }
+             ]
+             Image {
+                 anchors.centerIn : parent
+                 width:50
+                 height: 50
+                 id: flag
+                 source: "images/hand.svg"
+                 state: "NORMAL"; smooth: true;   antialiasing: true
+             }
+         }
+
           function notifyUser(message) { toolTip.text=message; toolTip.open() }
+          function getEdgeDescription(edge) {
+              var edgeSrcDst = "unknown"
+              if ( edge && edge.item ) {
+                  var edgeItem = edge.item
+                  if ( edgeItem.sourceItem &&
+                       edgeItem.sourceItem.node )
+                      edgeSrcDst = edgeItem.sourceItem.node.label
+                  edgeSrcDst += " -> "
+                  if ( edgeItem.destinationItem &&
+                       edgeItem.destinationItem.node )
+                      edgeSrcDst += edgeItem.destinationItem.node.label
+              }
+              return edgeSrcDst
+          }
           onNodeClicked: (node) => {
               notifyUser( "Node <b>" + node.label + "</b> clicked" )
               nodeEditor.node = node
@@ -745,6 +796,14 @@ Rectangle {
           onNodeRightClicked: (node) => { notifyUser( "Node <b>" + node.label + "</b> right clicked" ) }
           onNodeDoubleClicked: (node) => { notifyUser( "Node <b>" + node.label + "</b> double clicked" ) }
           onNodeMoved: (node) => { notifyUser("Node <b>" + node.label + "</b> moved") }
+          onConnectorEdgeInserted: (edge) => {
+                                       notifyUser("Edge inserted: " + getEdgeDescription(edge))
+
+                                   }
+          onConnectorRequestEdgeCreation: (src, dst) => { notifyUser("Requesting Edge creation from " + src.label + " to " + ( dst ? dst.label : "UNDEFINED" ) ) }
+          onEdgeClicked: (edge) => { notifyUser("Edge " + edge.label + " " + getEdgeDescription(edge) + " clicked") }
+          onEdgeDoubleClicked: (edge) => { notifyUser("Edge " + edge.label + " " + getEdgeDescription(edge) + " double clicked") }
+          onEdgeRightClicked: (edge) => { notifyUser("Edge " + edge.label + " " + getEdgeDescription(edge) + " right clicked") }
         } // Qan.Graph: topology
       ToolTip {
           id: toolTip

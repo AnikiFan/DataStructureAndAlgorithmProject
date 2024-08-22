@@ -12,8 +12,10 @@ qt6_add_qml_module(UntitledProject1Content
 		"App.qml"
 		"Screen01.qml"
                 "PersonNode.qml"
+                "SelectionDelegate.qml"
 	RESOURCES
 		"images/background.png"
+                "images/hand.svg"
 )
 
 
