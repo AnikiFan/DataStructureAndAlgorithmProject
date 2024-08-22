@@ -164,7 +164,7 @@ public:
     auto                setDstShape(ArrowShape dstShape) noexcept -> bool;
 private:
     //! \copydoc dstShape
-    ArrowShape          _dstShape = ArrowShape::Arrow;
+    ArrowShape          _dstShape = ArrowShape::None;
 signals:
     void                dstShapeChanged();
 

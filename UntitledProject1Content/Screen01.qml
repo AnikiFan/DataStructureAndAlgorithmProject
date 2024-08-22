@@ -727,6 +727,7 @@ Rectangle {
       anchors.top:parent.top
       anchors.bottom:controlPanel.top
       navigable   : true
+      grid:null
       graph: Qan.Graph {
           id: graph
           property var personNode:Qt.createComponent('PersonNode.qml')

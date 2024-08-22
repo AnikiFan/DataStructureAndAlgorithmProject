@@ -7,7 +7,7 @@ Rectangle {
     property real   selectionMargin: 3
     property color  selectionColor: Qt.rgba(0.,0.,1.,1.)
     property real   selectionWeight: 3
-
+    radius: width/2
     states: [
         State {
             name: "UNSELECTED"
@@ -28,5 +28,4 @@ Rectangle {
     opacity: 0.8
     color: Qt.rgba(0.,0.,0.,0.)
     clip: true
-    radius: 10
 }
