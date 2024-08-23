@@ -30,7 +30,7 @@ Rectangle {
     visible: true
     color: "#cfd8dc"
     state: "home"
-    Keys.forwardTo: [menu,questionPage,importPage,exportPage,heapShower,controlPanel,returnButton,questionButton,heapTable,quitBotton]
+    Keys.forwardTo: [menu,importPage,exportPage,heapShower,controlPanel,returnButton,heapTable,quitBotton]
     // Keys.forwardTo:{
     //     if(mainWindow.state==='home')return[menu]
     //     else if(controlPanel.questionOpen)return[questionPage]
@@ -140,8 +140,6 @@ Rectangle {
                         heapTable.positionViewAtColumn((heapTable.columns-1)/2,TableView.AlignHCenter)
                         heapTable.positionViewAtRow(0,TableView.AlignTop)
                         if(HeapModel.firstClicked){
-                            controlPanel.questionOpen = true
-                            console.log(controlPanel.questionOpen)
                             HeapModel.firstClicked = false
                             HeapModel.pause = true
                             HeapModel.pauseWhenSwapping = false
@@ -246,7 +244,7 @@ Rectangle {
         anchors.leftMargin: 0
         anchors.rightMargin: 0
         anchors.bottomMargin: 0
-        Keys.forwardTo: [returnButton,questionButton]
+        Keys.forwardTo: [returnButton]
         property bool questionOpen: false
         property bool importOpen: false
         property bool exportOpen: false
@@ -288,38 +286,38 @@ Rectangle {
                             }
         }
 
-        MyButton {
-            id: questionButton
-            width: questionButton.height
-            content: "?"
-            fontsize: 55
-            color:Material.Green
-            anchors.left: returnButton.right
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.leftMargin: 10
-            anchors.topMargin: 0
-            anchors.bottomMargin: 0
-            onClicked: {
-                if(timer.running){
-                    HeapModel.pause = true
-                    HeapModel.pauseWhenSwapping = true
-                    timer.stop()
-                }
-                else{
-                    HeapModel.pause = true
-                    HeapModel.pauseWhenSwapping = false
-                }
-                controlPanel.questionOpen = true
-            }
-            Keys.onPressed: (event) =>{
-                                if(event.key===Qt.Key_Question){
-                                    controlPanel.questionOpen = true
-                                    event.accepted = true
-                                }else event.accepted = false
-                            }
-            focus: mainWindow.state === "home" || bluredBackground.visible? false : true
-        }
+        // MyButton {
+        //     id: questionButton
+        //     width: questionButton.height
+        //     content: "?"
+        //     fontsize: 55
+        //     color:Material.Green
+        //     anchors.left: returnButton.right
+        //     anchors.top: parent.top
+        //     anchors.bottom: parent.bottom
+        //     anchors.leftMargin: 10
+        //     anchors.topMargin: 0
+        //     anchors.bottomMargin: 0
+        //     onClicked: {
+        //         if(timer.running){
+        //             HeapModel.pause = true
+        //             HeapModel.pauseWhenSwapping = true
+        //             timer.stop()
+        //         }
+        //         else{
+        //             HeapModel.pause = true
+        //             HeapModel.pauseWhenSwapping = false
+        //         }
+        //         controlPanel.questionOpen = true
+        //     }
+        //     Keys.onPressed: (event) =>{
+        //                         if(event.key===Qt.Key_Question){
+        //                             controlPanel.questionOpen = true
+        //                             event.accepted = true
+        //                         }else event.accepted = false
+        //                     }
+        //     focus: mainWindow.state === "home" || bluredBackground.visible? false : true
+        // }
 
         MyButton {
             id: importButton
@@ -720,80 +718,80 @@ Rectangle {
         anchors.fill: parent
         opacity: 0.9
 
-        Pane {
-            id: questionPage
-            focus: controlPanel.questionOpen
-            visible: controlPanel.questionOpen
-            Keys.onPressed: (event) =>{
-                                if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){
-                                    controlPanel.questionOpen = false
-                                    event.accepted = true
-                                }
-                                else event.accepted = false
-                            }
-            Keys.onLeftPressed:(event) =>{
-                                   if(view.currentIndex > 0){
-                                       event.accepted = true
-                                       view.currentIndex -=1 ;
-                                   }else event.accepted = false
-                               }
-            Keys.onRightPressed:(event) =>{
-                                    if(view.currentIndex<view.count-1){
-                                        event.accepted = true
-                                        view.currentIndex +=1 ;
-                                    }else event.accepted = false
-                                }
-            width: 400
-            height: 400
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.horizontalCenter: parent.horizontalCenter
-            Material.background: Material.color(Material.Teal,Material.Shade100)
-            Material.elevation: 10
-            ColumnLayout{
-                anchors.fill: parent
-                SwipeView {
-                    id: view
-                    currentIndex: 1
-                    clip: true
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    Page {
-                        Text{
-                            id: text3
-                            text:"test"
-                            anchors.fill: parent
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignTop
-                        }
-                    }
-                    Page {
-                        Text{
-                            id: text1
-                            text:"test1"
-                            anchors.fill: parent
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                    }
-                    Page {
-                        Text{
-                            id: text2
-                            text:"test2"
-                            anchors.fill: parent
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                    }
-                }
-            }
-            PageIndicator {
-                id: indicator
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.bottom: parent.bottom
-                count: view.count
-                currentIndex: view.currentIndex
-            }
-        }
+        // Pane {
+        //     id: questionPage
+        //     focus: controlPanel.questionOpen
+        //     visible: controlPanel.questionOpen
+        //     Keys.onPressed: (event) =>{
+        //                         if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){
+        //                             controlPanel.questionOpen = false
+        //                             event.accepted = true
+        //                         }
+        //                         else event.accepted = false
+        //                     }
+        //     Keys.onLeftPressed:(event) =>{
+        //                            if(view.currentIndex > 0){
+        //                                event.accepted = true
+        //                                view.currentIndex -=1 ;
+        //                            }else event.accepted = false
+        //                        }
+        //     Keys.onRightPressed:(event) =>{
+        //                             if(view.currentIndex<view.count-1){
+        //                                 event.accepted = true
+        //                                 view.currentIndex +=1 ;
+        //                             }else event.accepted = false
+        //                         }
+        //     width: 400
+        //     height: 400
+        //     anchors.verticalCenter: parent.verticalCenter
+        //     anchors.horizontalCenter: parent.horizontalCenter
+        //     Material.background: Material.color(Material.Teal,Material.Shade100)
+        //     Material.elevation: 10
+        //     ColumnLayout{
+        //         anchors.fill: parent
+        //         SwipeView {
+        //             id: view
+        //             currentIndex: 1
+        //             clip: true
+        //             Layout.fillHeight: true
+        //             Layout.fillWidth: true
+        //             Page {
+        //                 Text{
+        //                     id: text3
+        //                     text:"test"
+        //                     anchors.fill: parent
+        //                     horizontalAlignment: Text.AlignHCenter
+        //                     verticalAlignment: Text.AlignTop
+        //                 }
+        //             }
+        //             Page {
+        //                 Text{
+        //                     id: text1
+        //                     text:"test1"
+        //                     anchors.fill: parent
+        //                     horizontalAlignment: Text.AlignHCenter
+        //                     verticalAlignment: Text.AlignVCenter
+        //                 }
+        //             }
+        //             Page {
+        //                 Text{
+        //                     id: text2
+        //                     text:"test2"
+        //                     anchors.fill: parent
+        //                     horizontalAlignment: Text.AlignHCenter
+        //                     verticalAlignment: Text.AlignVCenter
+        //                 }
+        //             }
+        //         }
+        //     }
+        //     PageIndicator {
+        //         id: indicator
+        //         anchors.horizontalCenter: parent.horizontalCenter
+        //         anchors.bottom: parent.bottom
+        //         count: view.count
+        //         currentIndex: view.currentIndex
+        //     }
+        // }
 
         Pane {
             id: importPage
