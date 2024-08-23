@@ -665,7 +665,7 @@ signals:
     void                    selectionPolicyChanged();
 
 public:
-    /*! \brief Enable mutliple selection (default to true ie multiple selection with CTRL is enabled).
+    /*! \brief Enable mutliple selection (default to true ie multiple selection with CTRL is enabled).!!!!!!!I changed to false
      *
      * \warning setting \c multipleSelectionEnabled to \c false will clear the actual \c selectedNodes model.
      */
@@ -673,7 +673,7 @@ public:
     auto                setMultipleSelectionEnabled(bool multipleSelectionEnabled) -> bool;
     auto                getMultipleSelectionEnabled() const -> bool { return _multipleSelectionEnabled; }
 private:
-    bool                _multipleSelectionEnabled = true;
+    bool                _multipleSelectionEnabled = false;
 signals:
     void                multipleSelectionEnabledChanged();
 

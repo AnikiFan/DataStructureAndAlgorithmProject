@@ -234,10 +234,12 @@ Rectangle {
     }
     Pane {
         id: controlPanel
+        z: 3
         y: 903
         height: 100
         visible:  mainWindow.state === "home" ? false : true
         Material.background: Material.color(Material.BlueGrey,Material.Shade300)
+        Material.roundedScale: Material.NotRounded
         Material.elevation:10
         anchors.left: parent.left
         anchors.right: parent.right
@@ -664,7 +666,6 @@ Rectangle {
           }
           onNodeClicked: (node) => {
               notifyUser( "Node <b>" + node.label + "</b> clicked" )
-              nodeEditor.node = node
           }
           onNodeRightClicked: (node) => { notifyUser( "Node <b>" + node.label + "</b> right clicked" ) }
           onNodeDoubleClicked: (node) => { notifyUser( "Node <b>" + node.label + "</b> double clicked" ) }
@@ -682,59 +683,47 @@ Rectangle {
           id: toolTip
           timeout: 2500
       }
-
-      Pane {
-          id: nodeEditor
-          property var node: undefined
-          onNodeChanged: nodeItem = node ? node.item : undefined
-          property var nodeItem: undefined
-          anchors.bottom: parent.bottom; anchors.bottomMargin: 15
-          anchors.right: parent.right; anchors.rightMargin: 15
-          padding: 0
-          Frame {
-              ColumnLayout {
-                  Label {
-                      text: nodeEditor.node ? "Editing node <b>" + nodeEditor.node.label + "</b>": "Select a node..."
-                  }
-                  CheckBox {
-                      text: "Draggable"
-                      enabled: nodeEditor.nodeItem !== undefined
-                      checked: nodeEditor.nodeItem ? nodeEditor.nodeItem.draggable : false
-                      onClicked: nodeEditor.nodeItem.draggable = checked
-                  }
-                  CheckBox {
-                      text: "Resizable"
-                      enabled: nodeEditor.nodeItem !== undefined
-                      checked: nodeEditor.nodeItem ? nodeEditor.nodeItem.resizable : false
-                      onClicked: nodeEditor.nodeItem.resizable = checked
-                  }
-                  CheckBox {
-                      text: "Selected (read-only)"
-                      enabled: false
-                      checked: nodeEditor.nodeItem ? nodeEditor.nodeItem.selected : false
-                  }
-                  CheckBox {
-                      text: "Selectable"
-                      enabled: nodeEditor.nodeItem != null
-                      checked: nodeEditor.nodeItem ? nodeEditor.nodeItem.selectable : false
-                      onClicked: nodeEditor.nodeItem.selectable = checked
-                  }
-                  Label { text: "style.backRadius" }
-                  Slider {
-                      from: 0.; to: 15.0;
-                      value: defaultNodeStyle.backRadius
-                      stepSize: 1.0
-                      onMoved: defaultNodeStyle.backRadius = value
-                  }
-              }
-          }
-      }
+ // Frame: nodesListView
       //onRightClicked: function(pos) {
         //  contextMenu.open()
       //}
     } // Qan.GraphView    Qan.Graph {
+    Pane {
+        id:graphNodeListView
+        width:300
+        visible: parent.state==='app'
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.bottom:controlPanel.top
+        anchors.rightMargin: 0
+        anchors.topMargin: 0
+        anchors.bottomMargin:0
+        leftPadding: 0; rightPadding: 0
+        topPadding: 0;  bottomPadding: 0
+        padding: 0
+        Material.roundedScale: Material.NotRounded
+        Material.elevation: 10
+        Material.background:'#b0bec5'
+        ColumnLayout {
+            anchors.fill: parent
+            anchors.margins: 10
+            Label {
+                Layout.margins: 3
+                text: "Nodes:"
+                font.bold: true
+            }
+            NodesListView {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                model: graph.nodes
+                graphView: graphView
+                graph:graph
+            }
+        }
+    }
     Rectangle {
         id: bluredBackground
+        z:5
         visible: controlPanel.questionOpen || controlPanel.importOpen || controlPanel.exportOpen || controlPanel.addOpen
         color: "#ffffff"
         border.width: 0
@@ -1043,26 +1032,26 @@ Rectangle {
             function addNewNode(){
                 var node = graph.insertCustomNode()
                 node.label = graph.number
-                console.log(graph.number,graph.level)
+               // console.log(graph.number,graph.level)
 
                 if(graph.number===0){
-                    console.log('case 1')
+              //      console.log('case 1')
                     node.item.x = 0
                     node.item.y = 0
                 }else if(graph.number === 3*(graph.level-1)*(graph.level)+1){//该层的第一个
-                    console.log('case 2')
+                //    console.log('case 2')
                     node.item.x = graphView.length*graph.level
                     node.item.y = 0
                 }else{
                     var i = Math.floor((graph.number - (3*(graph.level-1)*(graph.level)+1)-1)/graph.level)
-                    console.log('case 3',i,(120+60*i)*Math.PI/360)
+              //      console.log('case 3',i,(120+60*i)*Math.PI/360)
                     node.item.x = graphView.lastX+graphView.length*Math.cos((120+60*i)*Math.PI/180)
                     node.item.y = graphView.lastY-graphView.length*Math.sin((120+60*i)*Math.PI/180)
 
                 }
 
                 if(graph.number === 3*graph.level*(graph.level+1)){//该层的最后一个
-                    console.log('last')
+             //       console.log('last')
                     graph.level += 1
                 }
                 graphView.lastX = node.item.x

@@ -1,5 +1,5 @@
 import QtQuick
-
+import QtQuick.Studio.DesignEffects
 Rectangle {
     id: selectionItem
     // QuickQanava global selection properties support: see qan::Selectable,
@@ -15,7 +15,7 @@ Rectangle {
         },
         State {
             name: "SELECTED"
-            PropertyChanges { target: selectionItem;    opacity : 0.8;   scale : 1.1    }
+            PropertyChanges { target: selectionItem;    opacity : 1;   scale : 1.1    }
         }
     ]
     // Use transitions to customize from SELECTED to UNSELECTED
@@ -25,7 +25,13 @@ Rectangle {
         width: selectionWeight * 2
         color: "red"
     }
-    opacity: 0.8
-    color: Qt.rgba(0.,0.,0.,0.)
+    DesignEffect {
+        layerBlurRadius: 20
+        effects: [
+            DesignDropShadow {
+            }
+        ]
+    }
+    color: Qt.rgba(1.,0.,0.,0.)
     clip: true
 }
