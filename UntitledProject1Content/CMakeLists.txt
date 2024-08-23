@@ -15,7 +15,8 @@ qt6_add_qml_module(UntitledProject1Content
                 "SelectionDelegate.qml"
                 "MyText.qml"
                 "MyButton.qml"
-	RESOURCES
+                "MyTextField.qml"
+        RESOURCES
 		"images/background.png"
                 "images/hand.svg"
 )

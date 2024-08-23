@@ -17,6 +17,7 @@ private:
     MyGraph<const char*> G;
 public:
     Q_INVOKABLE qan::Node*    insertCustomNode();
+
 };
 
 QML_DECLARE_TYPE(GraphModel)

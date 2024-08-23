@@ -11,7 +11,8 @@
 #include"element.h"
 #include"fileobject.h"
 #include<QuickQanava.h>
-#include<graphmodel.h>
+#include"graphmodel.h"
+#include"personnode.h"
 int main(int argc, char *argv[])
 {
     set_qt_environment();
@@ -32,7 +33,7 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonInstance("FileObject",1,0,"FileObject",fileObject);
 
     qmlRegisterType<GraphModel>("GraphModel", 1, 0, "GraphModel");
-
+    qmlRegisterType<PersonNode>("PersonNode", 1, 0, "PersonNode");
     QObject::connect(
         &engine, &QQmlApplicationEngine::objectCreated, &app,
         [url](QObject *obj, const QUrl &objUrl) {

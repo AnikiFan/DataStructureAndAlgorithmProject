@@ -20,6 +20,7 @@ import HeapModel
 import Element
 import FileObject
 import GraphModel
+import PersonNode
 import QtQuick.Controls.Material
 import QuickQanava 2.0 as Qan
 import "qrc:/QuickQanava" as Qan
@@ -248,6 +249,7 @@ Rectangle {
         property bool questionOpen: false
         property bool importOpen: false
         property bool exportOpen: false
+        property bool addOpen: false
         MyButton {
             id: returnButton
             width: returnButton.height
@@ -322,6 +324,7 @@ Rectangle {
         MyButton {
             id: importButton
             width: importButton.height
+            visible: mainWindow.state === 'algo'
             content: "↯"
             fontsize:60
             color:Material.Blue
@@ -348,6 +351,7 @@ Rectangle {
         MyButton {
             id: exportButton
             width: exportButton.height
+            visible: mainWindow.state === 'algo'
             content: "⇫"
             fontsize:60
             color:Material.Blue
@@ -371,7 +375,25 @@ Rectangle {
                 outputBox.text=FileObject.result()
             }
         }
-
+        MyButton {
+            id: addButton
+            width: addButton.height
+            visible: mainWindow.state === 'app'
+            content: "+"
+            fontsize:60
+            color:Material.Blue
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.rightMargin: 10
+            anchors.topMargin: 0
+            anchors.bottomMargin: 0
+            onClicked: {
+                controlPanel.addOpen=true
+                console.log(graphView.width,graphView.height,mainWindow.width,mainWindow.height)
+                graphView.centerOnPosition(Qt.point(0,0))
+            }
+        }
         MyButton {
             function startBottonText(){
                 if(HeapModel.finished){
@@ -568,6 +590,11 @@ Rectangle {
     }
     Qan.GraphView {
       id: graphView
+      property int centerX:mainWindow.width/2
+      property int centerY:mainWindow.height/2
+      property int length:300
+      property real lastX:0
+      property real lastY:0
       visible:parent.state === 'app'
       anchors.left:parent.left
       anchors.right:parent.right
@@ -575,19 +602,15 @@ Rectangle {
       anchors.bottom:controlPanel.top
       navigable   : true
       grid:null
+
       graph: GraphModel {
           id: graph
           property var personNode:Qt.createComponent('PersonNode.qml')
+          property int number:0//当前有的结点数
+          property int level :0//当前有的层数
           //selectionPolicy: Qan.Graph.SelectOnClick //选择，可以用于选择详细说明的用户
           //connectorEnabled: true //允许通过拖拽生成新边
           Component.onCompleted: {    // Qan.Graph.Component.onCompleted()
-              var n1 = graph.insertCustomNode()
-                 n1.label = 1; n1.item.x=50; n1.item.y= 50
-                n1.age = 24;n1.name='田所';n1.school='市西';n1.company='无'
-                 var n2 = graph.insertCustomNode()
-                 n2.label = 2; n2.item.x=200; n2.item.y= 125
-              var n3 = graph.insertCustomNode()
-                 n3.label = 3; n1.item.x=150; n1.item.y= 150
                  //defaultEdgeStyle.lineType = Qan.EdgeStyle.Curved
               defaultEdgeStyle.srcShape = Qan.EdgeStyle.None
               defaultEdgeStyle.dstShape = Qan.EdgeStyle.None
@@ -712,7 +735,7 @@ Rectangle {
     } // Qan.GraphView    Qan.Graph {
     Rectangle {
         id: bluredBackground
-        visible: controlPanel.questionOpen || controlPanel.importOpen || controlPanel.exportOpen
+        visible: controlPanel.questionOpen || controlPanel.importOpen || controlPanel.exportOpen || controlPanel.addOpen
         color: "#ffffff"
         border.width: 0
         anchors.fill: parent
@@ -792,7 +815,24 @@ Rectangle {
         //         currentIndex: view.currentIndex
         //     }
         // }
-
+        FileDialog {
+            id: readFileDialog
+            folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
+            onAccepted: {
+                FileObject.source = readFileDialog.file
+                FileObject.read()
+            }
+            nameFilters: ["Text files (*.txt)"]
+        }
+        FileDialog {
+            id: writeFileDialog
+            folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
+            onAccepted: {
+                FileObject.source = writeFileDialog.file
+                FileObject.write(outputBox.text)
+            }
+            nameFilters: ["Text files (*.txt)"]
+        }
         Pane {
             id: importPage
             Keys.onPressed: (event) =>{
@@ -802,24 +842,6 @@ Rectangle {
                                 }
                                 else event.accepted = false
                             }
-            FileDialog {
-                id: readFileDialog
-                folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
-                onAccepted: {
-                    FileObject.source = readFileDialog.file
-                    FileObject.read()
-                }
-                nameFilters: ["Text files (*.txt)"]
-            }
-            FileDialog {
-                id: writeFileDialog
-                folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
-                onAccepted: {
-                    FileObject.source = writeFileDialog.file
-                    FileObject.write(outputBox.text)
-                }
-                nameFilters: ["Text files (*.txt)"]
-            }
             width: 400
             height: 650
             anchors.verticalCenter: parent.verticalCenter
@@ -997,6 +1019,184 @@ Rectangle {
                     Material.background:Material.Red
                     onClicked: {
                         controlPanel.exportOpen=false
+                    }
+                }
+            }
+        }
+        Pane {
+            id: addPage
+            Keys.onPressed: (event) =>{
+                                if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){
+                                    controlPanel.importOpen = false
+                                    event.accepted = true
+                                }
+                                else event.accepted = false
+                            }
+            function clearInfo(){
+                nameTextField.text = ''
+                ageTextField.text = ''
+                genderComboBox.currentIndex = 0
+                schoolTextField.text = ''
+                companyTextField.text = ''
+                mottoTextField.text = ''
+            }
+            function addNewNode(){
+                var node = graph.insertCustomNode()
+                node.label = graph.number
+                console.log(graph.number,graph.level)
+
+                if(graph.number===0){
+                    console.log('case 1')
+                    node.item.x = 0
+                    node.item.y = 0
+                }else if(graph.number === 3*(graph.level-1)*(graph.level)+1){//该层的第一个
+                    console.log('case 2')
+                    node.item.x = graphView.length*graph.level
+                    node.item.y = 0
+                }else{
+                    var i = Math.floor((graph.number - (3*(graph.level-1)*(graph.level)+1)-1)/graph.level)
+                    console.log('case 3',i,(120+60*i)*Math.PI/360)
+                    node.item.x = graphView.lastX+graphView.length*Math.cos((120+60*i)*Math.PI/180)
+                    node.item.y = graphView.lastY-graphView.length*Math.sin((120+60*i)*Math.PI/180)
+
+                }
+
+                if(graph.number === 3*graph.level*(graph.level+1)){//该层的最后一个
+                    console.log('last')
+                    graph.level += 1
+                }
+                graphView.lastX = node.item.x
+                graphView.lastY = node.item.y
+                graph.number += 1
+
+                node.name = nameTextField.text
+                if(ageTextField.text==''){
+                    node.age = -1
+                }else{
+                    node.age = parseInt(ageTextField.text)
+                }
+                if(genderComboBox.currentIndex==1){
+                    node.gender = PersonNode.Male
+                }else if(genderComboBox.currentIndex == 2){
+                    node.gender = PersonNode.Female
+                }else{
+                    node.gender = PersonNode.Other
+                }
+                node.school = schoolTextField.text
+                node.company = companyTextField.text
+                node.motto = mottoTextField.text
+            }
+            width: 400
+            height: 700
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            Material.background: Material.color(Material.Teal,Material.Shade100)
+            Material.elevation: 10
+            visible: controlPanel.addOpen
+            focus: controlPanel.addOpen
+            ColumnLayout{
+                Material.accent: Material.Teal
+                anchors.fill: parent
+                spacing:10
+                Label{
+                    text: '#'+graph.number
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    font.pixelSize: 40
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    wrapMode: Text.NoWrap
+                    font.family: "Microsoft YaHei"
+                    font.styleName: "Bold"
+                    font.weight: Font.Black
+                    font.bold: true
+                }
+                MyTextField{
+                    id:nameTextField
+                    prompt: '姓名'
+                    validator: RegularExpressionValidator{regularExpression:/^[^\d]*$/}
+                    maximumLength: 17
+                }
+                MyTextField{
+                    id:ageTextField
+                    prompt: '年龄'
+                    validator:IntValidator{bottom:0;top:120;}
+                }
+                ComboBox{
+                    id:genderComboBox
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    model:['男','女','其他']
+                    font.pixelSize: 20
+                    font.family: "Microsoft YaHei"
+                    font.styleName: "Bold"
+                    font.weight: Font.Black
+                    font.bold: true
+                }
+                MyTextField{
+                    id:schoolTextField
+                    prompt: '就读学校'
+                    maximumLength: 17
+                }
+                MyTextField{
+                    id:companyTextField
+                    prompt: '工作单位'
+                    maximumLength: 17
+                }
+                MyTextField{
+                    id:mottoTextField
+                    prompt: '个性签名(17字以内)'
+                    maximumLength: 17
+                }
+
+                MyButton{
+                    id:addNextPersonButton
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    content:"确认并添加下一位"
+                    Material.background: Material.Amber
+                    fontsize: 30
+                    onClicked: {
+                        if(nameTextField.text==''){
+                            graph.notifyUser("姓名不能为空！")
+                        }else{
+                            addPage.addNewNode()
+                            addPage.clearInfo()
+                        }
+                    }
+                }
+
+                RowLayout{
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    MyButton{
+                        id:addCancelButton
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        content:"取消"
+                        fontsize: 30
+                        Material.background: Material.Red
+                        onClicked: {
+                            controlPanel.addOpen = false
+                            addPage.clearInfo()
+                        }
+                    }
+                    MyButton{
+                        id:addCheckButton
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        content:"确认"
+                        Material.background: Material.Green
+                        fontsize: 30
+                        onClicked: {
+                            if(nameTextField.text==''){
+                                graph.notifyUser("姓名不能为空！")
+                            }else{
+                                controlPanel.addOpen = false
+                                addPage.addNewNode()
+                                addPage.clearInfo()
+                            }
+                        }
                     }
                 }
             }
