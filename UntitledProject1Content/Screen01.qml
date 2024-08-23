@@ -690,7 +690,7 @@ Rectangle {
     } // Qan.GraphView    Qan.Graph {
     Pane {
         id:graphNodeListView
-        width:300
+        width:250
         visible: parent.state==='app'
         anchors.top: parent.top
         anchors.right: parent.right
@@ -709,8 +709,12 @@ Rectangle {
             anchors.margins: 10
             Label {
                 Layout.margins: 3
-                text: "Nodes:"
+                text: "人员名单:"
                 font.bold: true
+                font.pixelSize: 30
+                font.family: "Microsoft YaHei"
+                font.styleName: "Bold"
+                font.weight: Font.Black
             }
             NodesListView {
                 Layout.fillWidth: true

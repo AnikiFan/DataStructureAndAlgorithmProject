@@ -15,10 +15,30 @@ ListView {
     delegate: Item {
         id: nodeDelegate
         width: ListView.view.width
-        height: 30
-        Label {
-            id: nodeLabel
-            text: "Label: " + itemData.label
+        height: 50
+        ColumnLayout{
+            anchors.fill: parent
+            Label {
+                id: nodeLabel
+                text: "#" + itemData.label+":"+itemData.name
+                font.bold: true
+                font.pixelSize: 25
+                font.family: "Microsoft YaHei"
+                font.styleName: "Bold"
+                font.weight: Font.Black
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+            }
+            Label {
+                id: nodeMotto
+                text: itemData.motto
+                font.bold: true
+                font.pixelSize: 15
+                font.family: "Microsoft YaHei"
+                font.italic: true
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+            }
         }
         MouseArea {
             anchors.fill: nodeDelegate

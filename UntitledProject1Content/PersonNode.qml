@@ -41,8 +41,16 @@ Qan.NodeItem {
             Component.onCompleted: {console.log(node.label)}
             border.color: "black"; border.width: 5
             Text{
-                anchors.centerIn: parent
-                text:node.label
+                anchors.fill: parent
+                text:node.name
+                font.pixelSize: 25
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                wrapMode: Text.WrapAnywhere
+                font.family: "Microsoft YaHei"
+                font.styleName: "Bold"
+                font.weight: Font.Black
+                font.bold: true
             }
         }
     }
