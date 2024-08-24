@@ -780,7 +780,7 @@ public:
 
     inline auto         getSelectedNodes() -> SelectedNodes& { return _selectedNodes; }
     inline auto         getSelectedNodes() const -> const SelectedNodes& { return _selectedNodes; }
-private:
+protected:
     SelectedNodes       _selectedNodes;
 signals:
     void                selectedNodesChanged();

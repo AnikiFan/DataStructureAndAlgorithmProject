@@ -31,7 +31,7 @@ Rectangle {
     visible: true
     color: "#cfd8dc"
     state: "home"
-    Keys.forwardTo: [menu,importPage,exportPage,heapShower,controlPanel,returnButton,heapTable,quitBotton]
+    Keys.forwardTo: [menu,importPage,exportPage,heapShower,controlPanel,returnButton,heapTable,graphView,quitBotton]
     // Keys.forwardTo:{
     //     if(mainWindow.state==='home')return[menu]
     //     else if(controlPanel.questionOpen)return[questionPage]
@@ -400,8 +400,7 @@ Rectangle {
             anchors.bottomMargin: 0
             onClicked: {
                 controlPanel.addOpen=true
-                console.log(graphView.width,graphView.height,mainWindow.width,mainWindow.height)
-                graphView.centerOnPosition(Qt.point(0,0))
+               // console.log(graphView.width,graphView.height,mainWindow.width,mainWindow.height)
             }
         }
         MyButton {
@@ -527,10 +526,26 @@ Rectangle {
             maximumLength: 17
             font.bold: true
         }
+        // function loadInfo(node){
+        //     idfield.text='#'+node.label
+        //     nameField.text=node.name
+        //     ageField.text = node.age
+        //     if(node.gender===PersonNode.Male){
+        //         genderField.currentIndex= 0
+        //     }else if(node.gender===PersonNode.Female){
+        //         genderField.currentIndex=1
+        //     }else{
+        //         genderField.currentIndex=2
+        //     }
+        //     schoolField.text = node.school
+        //     companyField.text = node.company
+        //     mottoField.text =node.motto
+        // }
         MyButton {
             id: infoButton
             width: height
             content: ""
+            property var node:undefined
             visible:mainWindow.state==="app"
             anchors.top: parent.top
             anchors.bottom: parent.bottom
@@ -546,7 +561,92 @@ Rectangle {
                 scale:0.3
             }
             onClicked: {
-                controlPanel.infoOpen = true
+                if(parseInt(searchBar.text)>=0&&graph.isValid(parseInt(searchBar.text))){
+                    console.log('find node')
+                    node=graph.getNode(parseInt(searchBar.text))
+                    graph.clearSelection()
+                    graph.setNodeSelected(node,true)
+                    graph.setConnectorSource(node)
+                    graphView.centerOn(node.item)
+
+
+                    idfield.text='#'+node.label+'\n'+node.name
+                    ageField.text = node.age===-1?'':node.age
+                    if(node.gender===PersonNode.Male){
+                        genderField.currentIndex= 0
+                    }else if(node.gender===PersonNode.Female){
+                        genderField.currentIndex=1
+                    }else{
+                        genderField.currentIndex=2
+                    }
+                    schoolField.text = node.school
+                    companyField.text = node.company
+                    mottoField.text =node.motto
+
+
+                    controlPanel.infoOpen = true
+                }else{
+                    var result=graph.findNode(searchBar.text)
+                    if(result!==-1){
+                        node = graph.getNode(result)
+                        graph.clearSelection()
+                        graph.setNodeSelected(node,true)
+                        graph.setConnectorSource(node)
+                        graphView.centerOn(node.item)
+
+
+
+                        idfield.text='#'+node.label+'\n'+node.name
+                        ageField.text = node.age===-1?'':node.age
+                        if(node.gender===PersonNode.Male){
+                            genderField.currentIndex= 0
+                        }else if(node.gender===PersonNode.Female){
+                            genderField.currentIndex=1
+                        }else{
+                            genderField.currentIndex=2
+                        }
+                        schoolField.text = node.school
+                        companyField.text = node.company
+                        mottoField.text =node.motto
+
+
+
+
+                        controlPanel.infoOpen = true
+                        console.log('find node')
+                    }else if(graph.hasSelection()){
+                        node = graph.getSelectedNode()
+                        graph.setConnectorSource(node)
+                        graphView.centerOn(node.item)
+
+
+
+
+                        idfield.text='#'+node.label+'\n'+node.name
+                        ageField.text = node.age===-1?'':node.age
+                        if(node.gender===PersonNode.Male){
+                            genderField.currentIndex= 0
+                        }else if(node.gender===PersonNode.Female){
+                            genderField.currentIndex=1
+                        }else{
+                            genderField.currentIndex=2
+                        }
+                        schoolField.text = node.school
+                        companyField.text = node.company
+                        mottoField.text =node.motto
+
+
+
+
+                        controlPanel.infoOpen = true
+                    }
+                    else{
+                        console.log('locate failed')
+                        graph.notifyUser('您搜索的用户不存在！')
+                        graphView.centerOnPosition(Qt.point(0,0))
+                    }
+                }
+                searchBar.text = ''
             }
         }
         DelayButton {
@@ -577,7 +677,11 @@ Rectangle {
             onActivated: {
                 progress = 0
                 if(graph.hasSelection()){
+                    var node=graph.getSelectedNode()
+                    graph.notifyUser('已删除用户#'+node.label+':'+node.name+'！')
                     graph.removeSelection()
+                }else{
+                    graph.notifyUser('您尚未选中任何用户！')
                 }
             }
         }
@@ -602,11 +706,29 @@ Rectangle {
             onClicked: {
                 if(parseInt(searchBar.text)>=0&&graph.isValid(parseInt(searchBar.text))){
                     console.log('find node')
-                }else if(graph.findNode(searchBar.text)!==-1){
-                    console.log('find node')
+                    var node=graph.getNode(parseInt(searchBar.text))
+                    graph.clearSelection()
+                    graph.setNodeSelected(node,true)
+                    graph.setConnectorSource(node)
+                    graphView.centerOn(node.item)
+                    graph.notifyUser('选中用户#'+node.label+':'+node.name)
                 }else{
-                    console.log('locate failed')
+                    var result=graph.findNode(searchBar.text)
+                    if(result!==-1){
+                        var node1 = graph.getNode(result)
+                        graph.clearSelection()
+                        graph.setNodeSelected(node1,true)
+                        graph.setConnectorSource(node1)
+                        graphView.centerOn(node1.item)
+                        graph.notifyUser('选中用户#'+node1.label+':'+node1.name)
+                        console.log('find node')
+                    }else{
+                        console.log('locate failed')
+                        graph.notifyUser('您搜索的用户不存在！')
+                        graphView.centerOnPosition(Qt.point(0,0))
+                    }
                 }
+                searchBar.text = ''
             }
         }
     }
@@ -763,7 +885,10 @@ Rectangle {
              }
          }
 
-          function notifyUser(message) { toolTip.text=message; toolTip.open() }
+          function notifyUser(message) {
+              toolTip.text=message;
+              toolTip.open()
+          }
           function getEdgeDescription(edge) {
               var edgeSrcDst = "unknown"
               if ( edge && edge.item ) {
@@ -796,6 +921,16 @@ Rectangle {
       ToolTip {
           id: toolTip
           timeout: 2500
+          x:mainWindow.width/2-width/2
+          y:mainWindow.height/5-height/2
+          Material.background: Material.Pink
+          font.pixelSize: 20
+          font.family: "Microsoft YaHei"
+          Layout.fillWidth: true
+          font.styleName: "Bold"
+          font.weight: Font.Black
+          Layout.fillHeight: true
+          font.bold: true
       }
  // Frame: nodesListView
       //onRightClicked: function(pos) {
@@ -1156,6 +1291,7 @@ Rectangle {
               //      console.log('case 1')
                     node.item.x = 0
                     node.item.y = 0
+                    graphView.centerOnPosition(Qt.point(0,0))
                 }else if(graph.number === 3*(graph.level-1)*(graph.level)+1){//该层的第一个
                 //    console.log('case 2')
                     node.item.x = graphView.length*graph.level
@@ -1182,9 +1318,9 @@ Rectangle {
                 }else{
                     node.age = parseInt(ageTextField.text)
                 }
-                if(genderComboBox.currentIndex==1){
+                if(genderComboBox.currentIndex==0){
                     node.gender = PersonNode.Male
-                }else if(genderComboBox.currentIndex == 2){
+                }else if(genderComboBox.currentIndex == 1){
                     node.gender = PersonNode.Female
                 }else{
                     node.gender = PersonNode.Other
@@ -1318,7 +1454,7 @@ Rectangle {
                                 else event.accepted = false
                             }
             width: 850
-            height: 700
+            height: 600
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
             Material.background: Material.color(Material.Teal,Material.Shade100)
@@ -1335,7 +1471,7 @@ Rectangle {
                     Layout.preferredWidth: 400
                     spacing:10
                     Label{
-                        text: '#'+graph.number+":"
+                        id:idfield
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                         font.pixelSize: 40
@@ -1347,26 +1483,15 @@ Rectangle {
                         font.weight: Font.Black
                         font.bold: true
                     }
-                    Label{
-                        text: '姓名'
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        font.pixelSize: 35
-                        horizontalAlignment: Text.AlignLeft
-                        verticalAlignment: Text.AlignVCenter
-                        wrapMode: Text.NoWrap
-                        font.family: "Microsoft YaHei"
-                        font.styleName: "Bold"
-                        font.weight: Font.Black
-                        font.bold: true
-                    }
                     MyTextField{
                         id:ageField
+                        readOnly: true
                         prompt: '年龄'
                         validator:IntValidator{bottom:0;top:120;}
                     }
                     ComboBox{
                         id:genderField
+                        enabled: false
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                         model:['男','女','其他']
@@ -1378,17 +1503,20 @@ Rectangle {
                     }
                     MyTextField{
                         id:schoolField
+                        readOnly: true
                         prompt: '就读学校'
                         maximumLength: 17
                     }
                     MyTextField{
                         id:companyField
+                        readOnly: true
                         prompt: '工作单位'
                         maximumLength: 17
                     }
                     MyTextField{
                         id:mottoField
-                        prompt: '个性签名(17字以内)'
+                        readOnly: true
+                        prompt: '个性签名'
                         maximumLength: 17
                     }
                     MyButton{
@@ -1399,12 +1527,17 @@ Rectangle {
                         Material.background: Material.Green
                         fontsize: 30
                         onClicked: {
-
+                            ageField.readOnly=false
+                            genderField.enabled=true
+                            schoolField.readOnly=false
+                            companyField.readOnly=false
+                            mottoField.readOnly=false
                         }
                     }
                     RowLayout{
                         Layout.fillHeight: true
                         Layout.fillWidth: true
+                        spacing :10
                         MyButton{
                             id:infoReturnButton
                             Layout.fillHeight: true
@@ -1413,8 +1546,24 @@ Rectangle {
                             fontsize: 30
                             Material.background: Material.Red
                             onClicked: {
-                                controlPanel.addOpen = false
-                                addPage.clearInfo()
+                                controlPanel.infoOpen = false
+                                ageField.readOnly=true
+                                genderField.enabled=false
+                                schoolField.readOnly=true
+                                companyField.readOnly=true
+                                mottoField.readOnly=true
+                                infoButton.node.age = parseInt(ageField.text)
+                                if(genderField.currentIndex==0){
+                                    infoButton.node.gender = PersonNode.Male
+                                }else if(genderComboBox.currentIndex == 1){
+                                    infoButton.node.gender = PersonNode.Female
+                                }else{
+                                    infoButton.node.gender = PersonNode.Other
+                                }
+                                infoButton.node.school = schoolField.text
+                                infoButton.node.company = companyField.text
+                                infoButton.node.motto = mottoField.text
+                                infoButton.node = undefined
                             }
                         }
                         DelayButton {
@@ -1436,10 +1585,19 @@ Rectangle {
                                 anchors.centerIn: parent
                                 source: 'images/delete.svg'
                                 fillMode: Image.Pad
-                                scale:0.3
+                                scale:0.2
                             }
                             onActivated: {
                                 progress = 0
+                                graph.notifyUser('已删除用户#'+infoButton.node.label+':'+infoButton.node.name+'！')
+                                controlPanel.infoOpen = false
+                                infoButton.node = undefined
+                                graph.removeNode(infoButton.node,true)
+                                ageField.readOnly=true
+                                genderField.enabled=false
+                                schoolField.readOnly=true
+                                companyField.readOnly=true
+                                mottoField.readOnly=true
                             }
                         }
                     }

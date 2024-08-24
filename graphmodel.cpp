@@ -41,3 +41,8 @@ bool GraphModel::isValid(const long long i)
     return G.valid(i);
 }
 
+qan::Node *GraphModel::getSelectedNode()
+{
+    return *_selectedNodes.begin();
+}
+

@@ -21,6 +21,7 @@ public:
     Q_INVOKABLE qan::Node*    getNode(long long no);
     Q_INVOKABLE long long     findNode(const QString& );
     Q_INVOKABLE bool          isValid(const long long);
+    Q_INVOKABLE qan::Node*    getSelectedNode();
 };
 
 QML_DECLARE_TYPE(GraphModel)
