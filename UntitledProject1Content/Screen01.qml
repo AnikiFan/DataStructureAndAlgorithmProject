@@ -327,7 +327,7 @@ Rectangle {
             id: importButton
             width: importButton.height
             visible: mainWindow.state === 'algo'
-            content: "↯"
+            content: ""
             fontsize:60
             color:Material.Blue
             anchors.right: exportButton.left
@@ -348,13 +348,17 @@ Rectangle {
                 }
                 controlPanel.importOpen=true
             }
+            Image {
+                source: "images/import.svg"
+                anchors.fill: parent
+            }
         }
 
         MyButton {
             id: exportButton
             width: exportButton.height
             visible: mainWindow.state === 'algo'
-            content: "⇫"
+            content: ""
             fontsize:60
             color:Material.Blue
             anchors.right: parent.right
@@ -375,6 +379,10 @@ Rectangle {
                 }
                 controlPanel.exportOpen=true
                 outputBox.text=FileObject.result()
+            }
+            Image {
+                source: "images/export.svg"
+                anchors.fill: parent
             }
         }
         MyButton {
@@ -403,7 +411,7 @@ Rectangle {
                 }else if(HeapModel.pause){
                     return '▶';
                 }else{
-                    return "STOP";
+                    return "";
                 }
             }
             function startBottonTextFontsize(){
@@ -424,6 +432,13 @@ Rectangle {
                     return Material.Amber;
                 }
             }
+            Image{
+                source: 'images/stop.svg'
+                anchors.centerIn: parent
+                visible: !(HeapModel.finished||HeapModel.pause)
+                scale: 0.30
+            }
+
             id: startButton
             width: 240
             content:startBottonText()
@@ -492,6 +507,68 @@ Rectangle {
                     HeapModel.stop()
                     timer.stop()
                 }
+            }
+        }
+        TextField {
+            id: searchBar
+            width: 240
+            visible:mainWindow.state==="app"
+            Material.accent: Material.Pink
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.topMargin: 5
+            anchors.bottomMargin: 5
+            placeholderText: "人员编号或姓名"
+            placeholderTextColor: '#000000'
+            font.pixelSize: 20
+            font.styleName: "Bold"
+            font.family: "Microsoft YaHei"
+            font.bold: true
+        }
+        DelayButton {
+            id: deletetButton
+            width: height
+            text:""
+            visible:mainWindow.state==="app"
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.rightMargin: 10
+            anchors.topMargin: 0
+            anchors.bottomMargin: 0
+            anchors.right:searchBar.left
+            font.family: "Microsoft YaHei"
+            font.pixelSize: 50
+            font.bold: true
+            font.weight: Font.Black
+            display: AbstractButton.TextOnly
+            Material.background: Material.Pink
+            Material.roundedScale: Material.SmallScale
+            Material.elevation: 10
+            delay:1000
+            Image {
+                source: "images/delete.svg"
+                anchors.fill: parent
+                scale: 0.6
+            }
+        }
+        MyButton {
+            id: loacteButton
+            width: height
+            content: ""
+            visible:mainWindow.state==="app"
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.leftMargin: 10
+            anchors.topMargin: 0
+            anchors.bottomMargin: 0
+            fontsize: 60
+            color:Material.Pink
+            anchors.left:startButton.right
+            Image {
+                source: "images/locate.svg"
+                anchors.centerIn: parent
+                scale: 0.25
             }
         }
     }

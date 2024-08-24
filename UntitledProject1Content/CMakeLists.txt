@@ -20,6 +20,11 @@ qt6_add_qml_module(UntitledProject1Content
         RESOURCES
 		"images/background.png"
                 "images/hand.svg"
+                "images/export.svg"
+                "images/import.svg"
+                "images/stop.svg"
+                "images/delete.svg"
+                "images/locate.svg"
 )
 
 
