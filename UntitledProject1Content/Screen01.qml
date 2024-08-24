@@ -860,14 +860,14 @@ Rectangle {
 
          connectorEnabled: true
          connectorItem : Control {
+             id:connectorControl
              anchors.fill: parent
              hoverEnabled: true
              visible: false              // SAMPLE: Do not forget to hide the custom connector item by default, visual connector will set visible to true on demand
-             ToolTip.visible: hovered &&
-                              ( !parent.connectorDragged || state === "HILIGHT" )
              onStateChanged: {
-                 ToolTip.text = ( state === "HILIGHT" ? "Drop to connect" : "Drag on a target node" )
+                 connectorToolTip.text = ( state === "HILIGHT" ?  "松开以建立关系" :"拖拽至目标用户" )
              }
+
              states: [
                  State { name: "NORMAL"; PropertyChanges { target: flag; scale: 1.0 } },
                  State { name: "HILIGHT"; PropertyChanges { target: flag; scale: 1.7 } }
@@ -883,6 +883,16 @@ Rectangle {
                  id: flag
                  source: "images/hand.svg"
                  state: "NORMAL"; smooth: true;   antialiasing: true
+                 ToolTip{
+                     id:connectorToolTip
+                     Material.background: Material.Pink
+                     font.pixelSize: 20
+                     font.family: "Microsoft YaHei"
+                     font.styleName: "Bold"
+                     font.weight: Font.Black
+                     font.bold: true
+                     visible: connectorControl.hovered&&( !graph.connectorDragged || state === "HILIGHT" )
+                 }
              }
          }
           function notifyUser(message) {
@@ -926,10 +936,8 @@ Rectangle {
           Material.background: Material.Pink
           font.pixelSize: 20
           font.family: "Microsoft YaHei"
-          Layout.fillWidth: true
           font.styleName: "Bold"
           font.weight: Font.Black
-          Layout.fillHeight: true
           font.bold: true
       }
  // Frame: nodesListView

@@ -747,7 +747,7 @@ qan::Edge*  Graph::insertEdge(qan::Node* source, qan::Node* destination, QQmlCom
 {
     // PRECONDITION;
         // source and destination can't be nullptr
-    if (source == nullptr ||destination == nullptr||hasEdge(source,destination)||has_edge(destination,source))
+    if (source == nullptr ||destination == nullptr||hasEdge(source,destination)||has_edge(destination,source)||source==destination)
         return nullptr;
     return insertEdge<qan::Edge>(*source, destination, edgeComponent);
 }
