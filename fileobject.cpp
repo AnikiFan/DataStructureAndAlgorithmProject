@@ -25,14 +25,18 @@ QString FileObject::read()
 
 bool FileObject::write(const QString &data)
 {
-    QFile file(m_source);
-    if ( file.open(QFile::WriteOnly | QFile::Truncate) ) {
+    QUrl url(m_source);
+    QFile file(url.toLocalFile());
+    if ( file.open(QFile::WriteOnly | QIODevice::Text) ) {
         QTextStream out(&file);
         out<<data;
         file.close();
         qDebug()<<"output successfully\n";
         return true;
     }
+    QString errMsg = file.errorString();
+    qDebug()<<errMsg;
+    qDebug()<<m_source;
     qDebug()<<"output failed\n";
     return false;
 }

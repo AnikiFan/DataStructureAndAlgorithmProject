@@ -23,7 +23,7 @@ public:
     Q_INVOKABLE long long     findNode(const QString& );
     Q_INVOKABLE bool          isValid(const long long);
     Q_INVOKABLE qan::Node*    getSelectedNode();
-    void onConnectorEdgeInserted(qan::Edge* edge);
+    void onEdgeInserted(qan::Edge* edge);
 };
 
 QML_DECLARE_TYPE(GraphModel)

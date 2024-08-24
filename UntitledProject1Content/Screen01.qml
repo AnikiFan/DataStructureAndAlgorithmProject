@@ -18,7 +18,8 @@ import HeapListModel
 import HeapTableModel
 import HeapModel
 import Element
-import FileObject
+import WriteFileObject
+import ReadFileObject
 import GraphModel
 import PersonNode
 import QtQuick.Controls.Material
@@ -229,7 +230,10 @@ Rectangle {
                         anchors.margins: parent.border.width
                     }
                 }
-                ScrollBar.horizontal: ScrollBar { id: heapScrollBar }
+                ScrollBar.horizontal: ScrollBar {
+                    id: heapScrollBar
+                    visible: false
+                }
             }
     }
     Pane {
@@ -378,7 +382,7 @@ Rectangle {
                     HeapModel.pauseWhenSwapping = false
                 }
                 controlPanel.exportOpen=true
-                outputBox.text=FileObject.result()
+                outputBox.text=WriteFileObject.result()
             }
             Image {
                 source: "images/export.svg"
@@ -1069,8 +1073,8 @@ Rectangle {
             id: readFileDialog
             folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
             onAccepted: {
-                FileObject.source = readFileDialog.file
-                FileObject.read()
+                ReadFileObject.source = readFileDialog.file
+                inputBox.text = ReadFileObject.read()
             }
             nameFilters: ["Text files (*.txt)"]
         }
@@ -1078,8 +1082,8 @@ Rectangle {
             id: writeFileDialog
             folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
             onAccepted: {
-                FileObject.source = writeFileDialog.file
-                FileObject.write(outputBox.text)
+                WriteFileObject.source = writeFileDialog.file
+                WriteFileObject.write(outputBox.text)
             }
             nameFilters: ["Text files (*.txt)"]
         }
@@ -1158,28 +1162,33 @@ Rectangle {
                         Material.background: Material.Green
                         fontsize: 30
                         onClicked: {
-                            controlPanel.importOpen=false
-                            if(HeapModel.finished){
-                                HeapModel.reload(inputBox.text)
-                            }
-                            else{
-                                HeapModel.reloading = true
-                                HeapModel.quit = true
-                                if(HeapModel.pause&&!HeapModel.pauseWhenSwapping){
-                                    console.log('case1')
+                            if(parseInt(inputBox.input)<=0 ||parseInt(inputBox.input)>=0){
+                                controlPanel.importOpen=false
+                                if(HeapModel.finished){
+                                    HeapModel.reload(inputBox.text)
+                                }
+                                else{
+                                    HeapModel.reloading = true
+                                    HeapModel.quit = true
+                                    if(HeapModel.pause&&!HeapModel.pauseWhenSwapping){
+                                        console.log('case1')
+                                        HeapModel.stop()
+                                        HeapModel.pause = false
+                                        HeapModel.pauseWhenSwapping = false
+                                    }
+                                    else if(HeapModel.pause&&HeapModel.pauseWhenSwapping){
+                                        console.log('case2')
+                                        timer.start()
+                                        HeapModel.pause = false
+                                        HeapModel.pauseWhenSwapping = false
+                                    }
+                                    else{console.log('case 3')}
                                     HeapModel.stop()
-                                    HeapModel.pause = false
-                                    HeapModel.pauseWhenSwapping = false
+                                    timer.stop()
                                 }
-                                else if(HeapModel.pause&&HeapModel.pauseWhenSwapping){
-                                    console.log('case2')
-                                    timer.start()
-                                    HeapModel.pause = false
-                                    HeapModel.pauseWhenSwapping = false
-                                }
-                                else{console.log('case 3')}
-                                HeapModel.stop()
-                                timer.stop()
+                            }else{
+                                inputBox.text = ''
+                                graph.notifyUser('输入的数组不能为空！')
                             }
                         }
                     }

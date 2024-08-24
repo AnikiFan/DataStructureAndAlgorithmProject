@@ -29,9 +29,10 @@ int main(int argc, char *argv[])
     HeapTableModel *heapTableModel = new HeapTableModel(heapModel,heapModel);
     qmlRegisterSingletonInstance("HeapTableModel",1,0,"HeapTableModel",heapTableModel);
     qmlRegisterUncreatableType<Element>("Element", 1, 0, "Element", "Not creatable as it is an enum type");
-    FileObject *fileObject = new FileObject(heapModel,heapModel);
-    qmlRegisterSingletonInstance("FileObject",1,0,"FileObject",fileObject);
-
+    FileObject *writeFileObject = new FileObject(heapModel,heapModel);
+    qmlRegisterSingletonInstance("WriteFileObject",1,0,"WriteFileObject",writeFileObject);
+    FileObject *readFileObject = new FileObject(heapModel,heapModel);
+    qmlRegisterSingletonInstance("ReadFileObject",1,0,"ReadFileObject",readFileObject);
     qmlRegisterType<GraphModel>("GraphModel", 1, 0, "GraphModel");
     qmlRegisterType<PersonNode>("PersonNode", 1, 0, "PersonNode");
     QObject::connect(
