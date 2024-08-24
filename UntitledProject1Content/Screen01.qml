@@ -857,6 +857,7 @@ Rectangle {
              selectionPolicy: Qan.Graph.SelectOnClick
               selectionDelegate = customSelectionComponent
           }
+
          connectorEnabled: true
          connectorItem : Control {
              anchors.fill: parent
@@ -884,7 +885,6 @@ Rectangle {
                  state: "NORMAL"; smooth: true;   antialiasing: true
              }
          }
-
           function notifyUser(message) {
               toolTip.text=message;
               toolTip.open()
@@ -1129,6 +1129,7 @@ Rectangle {
                 RowLayout{
                     Layout.fillHeight: true
                     Layout.fillWidth: true
+                    spacing:10
                     MyButton{
                         id:importCancelButton
                         Layout.fillHeight: true
@@ -1226,6 +1227,7 @@ Rectangle {
                 RowLayout{
                     Layout.fillHeight: true
                     Layout.fillWidth: true
+                    spacing:10
                     MyButton{
                         id:textExportButton
                         Layout.fillHeight: true
@@ -1412,6 +1414,7 @@ Rectangle {
                 RowLayout{
                     Layout.fillHeight: true
                     Layout.fillWidth: true
+                    spacing:10
                     MyButton{
                         id:addCancelButton
                         Layout.fillHeight: true
@@ -1590,14 +1593,14 @@ Rectangle {
                             onActivated: {
                                 progress = 0
                                 graph.notifyUser('已删除用户#'+infoButton.node.label+':'+infoButton.node.name+'！')
-                                controlPanel.infoOpen = false
-                                infoButton.node = undefined
                                 graph.removeNode(infoButton.node,true)
                                 ageField.readOnly=true
                                 genderField.enabled=false
                                 schoolField.readOnly=true
                                 companyField.readOnly=true
                                 mottoField.readOnly=true
+                                infoButton.node = undefined
+                                controlPanel.infoOpen = false
                             }
                         }
                     }
@@ -1611,11 +1614,26 @@ Rectangle {
                     Layout.fillWidth: true
                     clip:true
                     id: listView1
+                    header:Label{
+                        text: '好友列表'
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        font.pixelSize: 20
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        wrapMode: Text.NoWrap
+                        font.family: "Microsoft YaHei"
+                        Layout.fillWidth: true
+                        font.styleName: "Bold"
+                        font.weight: Font.Black
+                        Layout.fillHeight: true
+                        font.bold: true
+                        visible: listView1.count!=0
+                    }
+
                     delegate: SwipeDelegate {
                         id: delegate1
 
                         text: modelData
-                        width: parent.width
 
                         swipe.left: Rectangle {
                             width: parent.width
@@ -1701,7 +1719,16 @@ Rectangle {
                     ScrollIndicator.vertical: ScrollIndicator { }
                     Label {
                         id: placeholder1
-                        text: qsTr("Swipe no more")
+                        text: '好友列表为空！'
+
+                        font.pixelSize: 20
+                        horizontalAlignment: Qt.AlignHCenter
+                        verticalAlignment: Qt.AlignVCenter
+                        wrapMode: Label.NoWrap
+                        font.family: "Microsoft YaHei"
+                        font.styleName: "Bold"
+                        font.weight: Font.Black
+                        font.bold: true
 
                         anchors.margins: 60
                         anchors.fill: parent
@@ -1709,10 +1736,6 @@ Rectangle {
                         opacity: 0.5
                         visible: listView1.count === 0
 
-                        horizontalAlignment: Qt.AlignHCenter
-                        verticalAlignment: Qt.AlignVCenter
-                        wrapMode: Label.WordWrap
-                        font.pixelSize: 18
                     }
                 }
                 ToolSeparator{
@@ -1724,11 +1747,26 @@ Rectangle {
                     Layout.fillWidth: true
                     clip:true
                     Layout.preferredWidth: 200
+                    header:Label{
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        text: '待添加好友'
+                        font.pixelSize: 20
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        wrapMode: Text.NoWrap
+                        font.family: "Microsoft YaHei"
+                        Layout.fillWidth: true
+                        font.styleName: "Bold"
+                        font.weight: Font.Black
+                        Layout.fillHeight: true
+                        font.bold: true
+                        visible:listView2.count!==0
+                    }
+
                     delegate: SwipeDelegate {
                         id: delegate2
 
                         text: modelData
-                        width: parent.width
 
                         swipe.right: Rectangle {
                             width: parent.width
@@ -1781,20 +1819,6 @@ Rectangle {
 
                     model: ListModel {
                         id: listModel2
-                        ListElement { text: "Lorem ipsum dolor sit amet" }
-                        ListElement { text: "Curabitur sit amet risus" }
-                        ListElement { text: "Suspendisse vehicula nisi" }
-                        ListElement { text: "Mauris imperdiet libero" }
-                        ListElement { text: "Sed vitae dui aliquet augue" }
-                        ListElement { text: "Praesent in elit eu nulla" }
-                        ListElement { text: "Etiam vitae magna" }
-                        ListElement { text: "Pellentesque eget elit euismod" }
-                        ListElement { text: "Nulla at enim porta" }
-                        ListElement { text: "Fusce tincidunt odio" }
-                        ListElement { text: "Ut non ex a ligula molestie" }
-                        ListElement { text: "Nam vitae justo scelerisque" }
-                        ListElement { text: "Vestibulum pulvinar tellus" }
-                        ListElement { text: "Quisque dignissim leo sed gravida" }
                     }
 
                     remove: Transition {
@@ -1814,15 +1838,22 @@ Rectangle {
                     ScrollIndicator.vertical: ScrollIndicator { }
                     Label {
                         id: placeholder2
-                        text: qsTr("Swipe no more")
-                        anchors.margins: 60
-                        anchors.fill: parent
-                        opacity: 0.5
-                        visible: listView2.count === 0
+                        text: '所有用户\n都已是您的好友！'
+
+                        font.pixelSize: 20
                         horizontalAlignment: Qt.AlignHCenter
                         verticalAlignment: Qt.AlignVCenter
-                        wrapMode: Label.WordWrap
-                        font.pixelSize: 18
+                        wrapMode: Label.NoWrap
+                        font.family: "Microsoft YaHei"
+                        font.styleName: "Bold"
+                        font.weight: Font.Black
+                        font.bold: true
+
+                        anchors.margins: 60
+                        anchors.fill: parent
+
+                        opacity: 0.5
+                        visible: listView2.count === 0
                     }
                 }
             }

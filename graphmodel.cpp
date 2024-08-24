@@ -4,7 +4,7 @@
 GraphModel::GraphModel(QQuickItem *parent)
     :Graph{parent}
 {
-
+    connect(this,&GraphModel::connectorEdgeInserted,this,&GraphModel::onConnectorEdgeInserted);
 }
 
 qan::Node *GraphModel::insertCustomNode() {
@@ -15,6 +15,11 @@ void GraphModel::onNodeInserted(qan::Node &node)
 {
     G.addNode(&node);
     return;
+}
+
+void GraphModel::onNodeRemoved(qan::Node &node)
+{
+    G.deleteNode(node.getLabel().toLongLong());
 }
 
 qan::Node *GraphModel::getNode(long long no)
@@ -46,3 +51,7 @@ qan::Node *GraphModel::getSelectedNode()
     return *_selectedNodes.begin();
 }
 
+void GraphModel::onConnectorEdgeInserted(qan::Edge* edge)
+{
+    qDebug()<<"edge inserted"<<get_edge_count();
+}

@@ -18,10 +18,12 @@ private:
 public:
     Q_INVOKABLE qan::Node*    insertCustomNode();
     void onNodeInserted(qan::Node&node)override;
+    void onNodeRemoved(qan::Node&node)override;
     Q_INVOKABLE qan::Node*    getNode(long long no);
     Q_INVOKABLE long long     findNode(const QString& );
     Q_INVOKABLE bool          isValid(const long long);
     Q_INVOKABLE qan::Node*    getSelectedNode();
+    void onConnectorEdgeInserted(qan::Edge* edge);
 };
 
 QML_DECLARE_TYPE(GraphModel)
