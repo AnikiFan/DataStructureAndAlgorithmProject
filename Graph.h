@@ -1,93 +1,117 @@
 #ifndef GRAPH_H
 #define GRAPH_H
-#include"Array.h"
-#include"Vector.h"
-#include<stdexcept>
+#include "Array.h"
+#include "Vector.h"
+#include <stdexcept>
 /// @brief 简单图，即不允许有环和重边！
-/// @tparam T
-template <typename T>
-class MyGraph
+/// @tparam T1,T2
+template <typename T1, typename T2>
+class WeightedGraph
 {
 public:
-    MyGraph();
-    ~MyGraph();
-    void addNode(const T&);
+    WeightedGraph();
+    ~WeightedGraph();
+    void addNode(const T1 &);
     void deleteNode(const long long);
-    void addEdge(const long long,const long long);
-    void deleteEdge(const long long ,const long long);
+    void addEdge(const long long, const long long, const T2 &);
+    void deleteEdge(const long long, const long long);
     long long VertexCnt();
     long long EdgeCnt();
+
 private:
-    Vector<T> V;
-    Vector<Array<long long >> E;
+    Vector<T1> V;
+    Vector<Array<long long>> E;
+    Vector<Array<T2>> W;
     Vector<int> Active;
     long long VNum;
     long long ENum;
 };
 
-template <typename T>
-inline MyGraph<T>::MyGraph()
-    :VNum{0},ENum{0}
+template <typename T1, typename T2>
+inline WeightedGraph<T1, T2>::WeightedGraph()
+    : VNum{0}, ENum{0}
 {
 }
 
-template <typename T>
-inline MyGraph<T>::~MyGraph()
+template <typename T1, typename T2>
+inline WeightedGraph<T1, T2>::~WeightedGraph()
 {
-
 }
 
-template <typename T>
-inline void MyGraph<T>::addNode(const T& value)
+template <typename T1, typename T2>
+inline void WeightedGraph<T1, T2>::addNode(const T1 &value)
 {
     V.push_back(value);
     E.push_back(Array<long long>());
+    W.push_back(Array<long long>());
     Active.push_back(1);
     VNum++;
 }
 
-template <typename T>
-inline void MyGraph<T>::deleteNode(const long long i)
+template <typename T1, typename T2>
+inline void WeightedGraph<T1, T2>::deleteNode(const long long i)
 {
-    if(i<0||i>V.length()||!Active[i]){throw std::invalid_argument("Graph::deleteNode");}
+    if (i < 0 || i > V.length() || !Active[i])
+    {
+        throw std::invalid_argument("Graph::deleteNode");
+    }
     Active[i] = 0;
     VNum--;
     ENum -= E[i].length();
-    Node<long long>*p{E[i].getHead()};
-    while(p) {
-        E[p->getValue()].remove(i,[](const long long & x,const long long &y){return x==y;});
+    Node<long long> *p{E[i].getHead()};
+    while (p)
+    {
+        long long no{E[p->getValue()].find(i)};
+        E[p->getValue()].remove(no);
+        W[p->getValue()].remove(no);
         p = p->getNext();
     }
     E[i].destroy();
     return;
 }
 
-template <typename T>
-inline void MyGraph<T>::addEdge(const long long i, const long long j)
+template <typename T1, typename T2>
+inline void WeightedGraph<T1, T2>::addEdge(const long long i, const long long j, const T2 &val)
 {
-    if(i==j||i<0||i>=V.length()||!Active[i]||j<0||j>=V.length()||!Active[j]){throw std::invalid_argument("Graph::addEdge");}
-    ENum ++;
-    E[i].insert(j);//这里并没有检测是否已经存在边
+    if (i == j || i < 0 || i >= V.length() || !Active[i] || j < 0 || j >= V.length() || !Active[j])
+    {
+        throw std::invalid_argument("Graph::addEdge");
+    }
+    ENum++;
+    E[i].insert(j); // 这里并没有检测是否已经存在边
     E[j].insert(i);
+    W[i].insert(val);
+    W[j].insert(val);
     return;
 }
 
-template <typename T>
-inline void MyGraph<T>::deleteEdge(const long long i, const long long j)
+template <typename T1, typename T2>
+inline void WeightedGraph<T1, T2>::deleteEdge(const long long i, const long long j)
 {
-    if(i==j||i<0||i>=V.length()||!Active[i]||j<0||j>=V.length()||!Active[j]){throw std::invalid_argument("Graph::deleteEdge");}
-    if(E[i].remove(j,[](const long long &x,const long long &y){return x==y;})&&E[j].remove(i,[](const long long &x,const long long &y){return x==y;})){ENum--;}
+    if (i == j || i < 0 || i >= V.length() || !Active[i] || j < 0 || j >= V.length() || !Active[j])
+    {
+        throw std::invalid_argument("Graph::deleteEdge");
+    }
+    long long no1{E[i].find(j)}, no2{E[j].find(i)};
+    if (no1 == -1 || no2 == -1)
+    {
+        throw std::invalid_argument("WeightedGraph::deleteEdge");
+    }
+    E[i].remove(no1);
+    W[i].remove(no1);
+    E[j].remove(no2);
+    W[j].remove(no2);
     return;
 }
 
-template <typename T>
-inline long long MyGraph<T>::VertexCnt()
+template <typename T1, typename T2>
+inline long long WeightedGraph<T1, T2>::VertexCnt()
 {
     return VNum;
 }
 
-template <typename T>
-inline long long MyGraph<T>::EdgeCnt()
+template <typename T1, typename T2>
+inline long long WeightedGraph<T1, T2>::EdgeCnt()
 {
     return ENum;
 }

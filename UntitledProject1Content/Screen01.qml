@@ -248,10 +248,10 @@ Rectangle {
         anchors.rightMargin: 0
         anchors.bottomMargin: 0
         Keys.forwardTo: [returnButton]
-        property bool questionOpen: false
         property bool importOpen: false
         property bool exportOpen: false
         property bool addOpen: false
+        property bool infoOpen: false
         MyButton {
             id: returnButton
             width: returnButton.height
@@ -526,6 +526,28 @@ Rectangle {
             font.family: "Microsoft YaHei"
             font.bold: true
         }
+        MyButton {
+            id: infoButton
+            width: height
+            content: ""
+            visible:mainWindow.state==="app"
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.rightMargin: 10
+            anchors.topMargin: 0
+            anchors.bottomMargin: 0
+            fontsize: 60
+            color:Material.Pink
+            anchors.right:searchBar.left
+            Image {
+                source: "images/info.svg"
+                anchors.centerIn: parent
+                scale:0.3
+            }
+            onClicked: {
+                controlPanel.infoOpen = true
+            }
+        }
         DelayButton {
             id: deletetButton
             width: height
@@ -536,13 +558,13 @@ Rectangle {
             anchors.rightMargin: 10
             anchors.topMargin: 0
             anchors.bottomMargin: 0
-            anchors.right:searchBar.left
+            anchors.right:addButton.left
             font.family: "Microsoft YaHei"
             font.pixelSize: 50
             font.bold: true
             font.weight: Font.Black
             display: AbstractButton.TextOnly
-            Material.background: Material.Pink
+            Material.background: Material.Red
             Material.roundedScale: Material.SmallScale
             Material.elevation: 10
             delay:1000
@@ -550,6 +572,12 @@ Rectangle {
                 source: "images/delete.svg"
                 anchors.fill: parent
                 scale: 0.6
+            }
+            onActivated: {
+                progress = 0
+                if(graph.hasSelection()){
+                    graph.removeSelection()
+                }
             }
         }
         MyButton {
@@ -681,7 +709,6 @@ Rectangle {
       anchors.bottom:controlPanel.top
       navigable   : true
       grid:null
-
       graph: GraphModel {
           id: graph
           property var personNode:Qt.createComponent('PersonNode.qml')
@@ -805,7 +832,7 @@ Rectangle {
     Rectangle {
         id: bluredBackground
         z:5
-        visible: controlPanel.questionOpen || controlPanel.importOpen || controlPanel.exportOpen || controlPanel.addOpen
+        visible: controlPanel.questionOpen || controlPanel.importOpen || controlPanel.exportOpen || controlPanel.addOpen || controlPanel.infoOpen
         color: "#ffffff"
         border.width: 0
         anchors.fill: parent
@@ -1097,7 +1124,7 @@ Rectangle {
             id: addPage
             Keys.onPressed: (event) =>{
                                 if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){
-                                    controlPanel.importOpen = false
+                                    controlPanel.addOpen = false
                                     event.accepted = true
                                 }
                                 else event.accepted = false
@@ -1267,6 +1294,367 @@ Rectangle {
                                 addPage.clearInfo()
                             }
                         }
+                    }
+                }
+            }
+        }
+        Pane {
+            id: infoPage
+            Keys.onPressed: (event) =>{
+                                if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){
+                                    controlPanel.infoOpen = false
+                                    event.accepted = true
+                                }
+                                else event.accepted = false
+                            }
+            width: 850
+            height: 700
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            Material.background: Material.color(Material.Teal,Material.Shade100)
+            Material.elevation: 10
+            visible: controlPanel.infoOpen
+            focus: controlPanel.infoOpen
+            RowLayout{
+                anchors.fill: parent
+                spacing: 0
+                ColumnLayout{
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    Material.accent: Material.Teal
+                    Layout.preferredWidth: 400
+                    spacing:10
+                    Label{
+                        text: '#'+graph.number+":"
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        font.pixelSize: 40
+                        horizontalAlignment: Text.AlignLeft
+                        verticalAlignment: Text.AlignVCenter
+                        wrapMode: Text.NoWrap
+                        font.family: "Microsoft YaHei"
+                        font.styleName: "Bold"
+                        font.weight: Font.Black
+                        font.bold: true
+                    }
+                    Label{
+                        text: '姓名'
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        font.pixelSize: 35
+                        horizontalAlignment: Text.AlignLeft
+                        verticalAlignment: Text.AlignVCenter
+                        wrapMode: Text.NoWrap
+                        font.family: "Microsoft YaHei"
+                        font.styleName: "Bold"
+                        font.weight: Font.Black
+                        font.bold: true
+                    }
+                    MyTextField{
+                        id:ageField
+                        prompt: '年龄'
+                        validator:IntValidator{bottom:0;top:120;}
+                    }
+                    ComboBox{
+                        id:genderField
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        model:['男','女','其他']
+                        font.pixelSize: 20
+                        font.family: "Microsoft YaHei"
+                        font.styleName: "Bold"
+                        font.weight: Font.Black
+                        font.bold: true
+                    }
+                    MyTextField{
+                        id:schoolField
+                        prompt: '就读学校'
+                        maximumLength: 17
+                    }
+                    MyTextField{
+                        id:companyField
+                        prompt: '工作单位'
+                        maximumLength: 17
+                    }
+                    MyTextField{
+                        id:mottoField
+                        prompt: '个性签名(17字以内)'
+                        maximumLength: 17
+                    }
+                    MyButton{
+                        id:editButton
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        content:"编辑个人信息"
+                        Material.background: Material.Green
+                        fontsize: 30
+                        onClicked: {
+
+                        }
+                    }
+                    RowLayout{
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        MyButton{
+                            id:infoReturnButton
+                            Layout.fillHeight: true
+                            Layout.fillWidth: true
+                            content:"返回"
+                            fontsize: 30
+                            Material.background: Material.Red
+                            onClicked: {
+                                controlPanel.addOpen = false
+                                addPage.clearInfo()
+                            }
+                        }
+                        DelayButton {
+                            id: deletetInfoButton
+                            Layout.fillHeight: true
+                            Layout.fillWidth: true
+                            text:"    "
+                            Material.foreground: Material.Amber
+                            font.family: "Microsoft YaHei"
+                            font.pixelSize: 50
+                            font.bold: true
+                            font.weight: Font.Black
+                            display: AbstractButton.TextOnly
+                            Material.background: Material.Amber
+                            Material.roundedScale: Material.SmallScale
+                            Material.elevation: 10
+                            delay:1000
+                            Image{
+                                anchors.centerIn: parent
+                                source: 'images/delete.svg'
+                                fillMode: Image.Pad
+                                scale:0.3
+                            }
+                            onActivated: {
+                                progress = 0
+                            }
+                        }
+                    }
+                }
+                ToolSeparator{
+                    Layout.fillHeight: true
+                }
+                ListView {
+                    Layout.preferredWidth:200
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    clip:true
+                    id: listView1
+                    delegate: SwipeDelegate {
+                        id: delegate1
+
+                        text: modelData
+                        width: parent.width
+
+                        swipe.left: Rectangle {
+                            width: parent.width
+                            height: parent.height
+
+                            clip: true
+                            color: SwipeDelegate.pressed ? "#555" : "#666"
+
+                            Label {
+                                font.family: "Fontello"
+                                text: delegate1.swipe.complete ? '⭕' // icon-cw-circled
+                                                              : "×" // icon-cancel-circled-1
+
+                                padding: 20
+                                anchors.fill: parent
+                                horizontalAlignment: Qt.AlignRight
+                                verticalAlignment: Qt.AlignVCenter
+
+                                opacity: 2 * -delegate1.swipe.position
+
+                                color: Material.color(delegate1.swipe.complete ? Material.Green : Material.Red, Material.Shade200)
+                                Behavior on color { ColorAnimation { } }
+                            }
+
+                            Label {
+                                text: qsTr("Removed")
+                                color: "white"
+
+                                padding: 20
+                                anchors.fill: parent
+                                horizontalAlignment: Qt.AlignLeft
+                                verticalAlignment: Qt.AlignVCenter
+
+                                opacity: delegate1.swipe.complete ? 1 : 0
+                                Behavior on opacity { NumberAnimation { } }
+                            }
+
+                            SwipeDelegate.onClicked: delegate1.swipe.close()
+                            SwipeDelegate.onPressedChanged: undoTimer1.stop()
+                        }
+
+                        Timer {
+                            id: undoTimer1
+                            interval: 3600
+                            onTriggered: listModel1.remove(index)
+                        }
+
+                        swipe.onCompleted: undoTimer1.start()
+                    }
+
+                    model: ListModel {
+                        id: listModel1
+                        ListElement { text: "Lorem ipsum dolor sit amet" }
+                        ListElement { text: "Curabitur sit amet risus" }
+                        ListElement { text: "Suspendisse vehicula nisi" }
+                        ListElement { text: "Mauris imperdiet libero" }
+                        ListElement { text: "Sed vitae dui aliquet augue" }
+                        ListElement { text: "Praesent in elit eu nulla" }
+                        ListElement { text: "Etiam vitae magna" }
+                        ListElement { text: "Pellentesque eget elit euismod" }
+                        ListElement { text: "Nulla at enim porta" }
+                        ListElement { text: "Fusce tincidunt odio" }
+                        ListElement { text: "Ut non ex a ligula molestie" }
+                        ListElement { text: "Nam vitae justo scelerisque" }
+                        ListElement { text: "Vestibulum pulvinar tellus" }
+                        ListElement { text: "Quisque dignissim leo sed gravida" }
+                    }
+
+                    remove: Transition {
+                        SequentialAnimation {
+                            PauseAnimation { duration: 125 }
+                            NumberAnimation { property: "height"; to: 0; easing.type: Easing.InOutQuad }
+                        }
+                    }
+
+                    displaced: Transition {
+                        SequentialAnimation {
+                            PauseAnimation { duration: 125 }
+                            NumberAnimation { property: "y"; easing.type: Easing.InOutQuad }
+                        }
+                    }
+
+                    ScrollIndicator.vertical: ScrollIndicator { }
+                    Label {
+                        id: placeholder1
+                        text: qsTr("Swipe no more")
+
+                        anchors.margins: 60
+                        anchors.fill: parent
+
+                        opacity: 0.5
+                        visible: listView1.count === 0
+
+                        horizontalAlignment: Qt.AlignHCenter
+                        verticalAlignment: Qt.AlignVCenter
+                        wrapMode: Label.WordWrap
+                        font.pixelSize: 18
+                    }
+                }
+                ToolSeparator{
+                    Layout.fillHeight: true
+                }
+                ListView {
+                    id: listView2
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    clip:true
+                    Layout.preferredWidth: 200
+                    delegate: SwipeDelegate {
+                        id: delegate2
+
+                        text: modelData
+                        width: parent.width
+
+                        swipe.right: Rectangle {
+                            width: parent.width
+                            height: parent.height
+
+                            clip: true
+                            color: SwipeDelegate.pressed ? "#555" : "#666"
+
+                            Label {
+                                font.family: "Fontello"
+                                text: delegate2.swipe.complete ? '⭕' // icon-cw-circled
+                                                              : "×" // icon-cancel-circled-1
+
+                                padding: 20
+                                anchors.fill: parent
+                                horizontalAlignment: Qt.AlignRight
+                                verticalAlignment: Qt.AlignVCenter
+
+                                opacity: 2 * -delegate2.swipe.position
+
+                                color: Material.color(delegate2.swipe.complete ? Material.Green : Material.Red, Material.Shade200)
+                                Behavior on color { ColorAnimation { } }
+                            }
+
+                            Label {
+                                text: qsTr("Removed")
+                                color: "white"
+
+                                padding: 20
+                                anchors.fill: parent
+                                horizontalAlignment: Qt.AlignLeft
+                                verticalAlignment: Qt.AlignVCenter
+
+                                opacity: delegate2.swipe.complete ? 1 : 0
+                                Behavior on opacity { NumberAnimation { } }
+                            }
+
+                            SwipeDelegate.onClicked: delegate2.swipe.close()
+                            SwipeDelegate.onPressedChanged: undoTimer2.stop()
+                        }
+
+                        Timer {
+                            id: undoTimer2
+                            interval: 3600
+                            onTriggered: listModel2.remove(index)
+                        }
+
+                        swipe.onCompleted: undoTimer2.start()
+                    }
+
+                    model: ListModel {
+                        id: listModel2
+                        ListElement { text: "Lorem ipsum dolor sit amet" }
+                        ListElement { text: "Curabitur sit amet risus" }
+                        ListElement { text: "Suspendisse vehicula nisi" }
+                        ListElement { text: "Mauris imperdiet libero" }
+                        ListElement { text: "Sed vitae dui aliquet augue" }
+                        ListElement { text: "Praesent in elit eu nulla" }
+                        ListElement { text: "Etiam vitae magna" }
+                        ListElement { text: "Pellentesque eget elit euismod" }
+                        ListElement { text: "Nulla at enim porta" }
+                        ListElement { text: "Fusce tincidunt odio" }
+                        ListElement { text: "Ut non ex a ligula molestie" }
+                        ListElement { text: "Nam vitae justo scelerisque" }
+                        ListElement { text: "Vestibulum pulvinar tellus" }
+                        ListElement { text: "Quisque dignissim leo sed gravida" }
+                    }
+
+                    remove: Transition {
+                        SequentialAnimation {
+                            PauseAnimation { duration: 125 }
+                            NumberAnimation { property: "height"; to: 0; easing.type: Easing.InOutQuad }
+                        }
+                    }
+
+                    displaced: Transition {
+                        SequentialAnimation {
+                            PauseAnimation { duration: 125 }
+                            NumberAnimation { property: "y"; easing.type: Easing.InOutQuad }
+                        }
+                    }
+
+                    ScrollIndicator.vertical: ScrollIndicator { }
+                    Label {
+                        id: placeholder2
+                        text: qsTr("Swipe no more")
+                        anchors.margins: 60
+                        anchors.fill: parent
+                        opacity: 0.5
+                        visible: listView2.count === 0
+                        horizontalAlignment: Qt.AlignHCenter
+                        verticalAlignment: Qt.AlignVCenter
+                        wrapMode: Label.WordWrap
+                        font.pixelSize: 18
                     }
                 }
             }

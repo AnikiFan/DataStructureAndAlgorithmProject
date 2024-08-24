@@ -25,6 +25,7 @@ qt6_add_qml_module(UntitledProject1Content
                 "images/stop.svg"
                 "images/delete.svg"
                 "images/locate.svg"
+                "images/info.svg"
 )
 
 

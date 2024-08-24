@@ -14,7 +14,7 @@ public:
     virtual ~GraphModel() override  { /* Nil */ }
 private:
     GraphModel(const GraphModel &) = delete;
-    MyGraph<const char*> G;
+    WeightedGraph<qan::Node*,qan::Edge*> G;
 public:
     Q_INVOKABLE qan::Node*    insertCustomNode();
 
