@@ -1607,52 +1607,46 @@ Rectangle {
 
                     delegate: SwipeDelegate {
                         id: delegate1
-
+                        width:listView1.width
                         text: modelData
 
                         swipe.left: Rectangle {
                             width: parent.width
                             height: parent.height
-
                             clip: true
-                            color: SwipeDelegate.pressed ? "#555" : "#666"
-
+                            color: SwipeDelegate.pressed ? Material.color(Material.BlueGrey,Material.Shade300):Material.color(Material.BlueGrey,Material.Shade200)
                             Label {
-                                font.family: "Fontello"
-                                text: delegate1.swipe.complete ? '⭕' // icon-cw-circled
-                                                              : "×" // icon-cancel-circled-1
+                                text: delegate1.swipe.complete ? '' // icon-cw-circled
+                                                              : "右滑以删除好友" // icon-cancel-circled-1
 
+                                color: "black"
+                                font.family: "Microsoft YaHei"
+                                font.pixelSize: 15
+                                padding: 20
+                                anchors.fill: parent
+                                horizontalAlignment: Qt.AlignLeft
+                                verticalAlignment: Qt.AlignVCenter
+                                opacity: delegate1.swipe.complete ? 0 : 1
+                                Behavior on opacity { NumberAnimation { } }
+                            }
+                            Label {
+                                text: "已删除"
+                                color: "black"
+                                font.family: "Microsoft YaHei"
+                                font.pixelSize: 15
                                 padding: 20
                                 anchors.fill: parent
                                 horizontalAlignment: Qt.AlignRight
                                 verticalAlignment: Qt.AlignVCenter
 
-                                opacity: 2 * -delegate1.swipe.position
-
-                                color: Material.color(delegate1.swipe.complete ? Material.Green : Material.Red, Material.Shade200)
-                                Behavior on color { ColorAnimation { } }
-                            }
-
-                            Label {
-                                text: qsTr("Removed")
-                                color: "white"
-
-                                padding: 20
-                                anchors.fill: parent
-                                horizontalAlignment: Qt.AlignLeft
-                                verticalAlignment: Qt.AlignVCenter
-
                                 opacity: delegate1.swipe.complete ? 1 : 0
                                 Behavior on opacity { NumberAnimation { } }
                             }
-
-                            SwipeDelegate.onClicked: delegate1.swipe.close()
-                            SwipeDelegate.onPressedChanged: undoTimer1.stop()
                         }
 
                         Timer {
                             id: undoTimer1
-                            interval: 3600
+                            interval: 1000
                             onTriggered: listModel1.remove(index)
                         }
 
@@ -1691,7 +1685,7 @@ Rectangle {
                         }
                     }
 
-                    ScrollIndicator.vertical: ScrollIndicator { }
+                    ScrollIndicator.vertical: ScrollIndicator {visible:false}
                     Label {
                         id: placeholder1
                         text: '好友列表为空！'
@@ -1737,39 +1731,54 @@ Rectangle {
                         font.bold: true
                         visible:listView2.count!==0
                     }
-
+                    model: ListModel {
+                        id: listModel2
+                        ListElement { text: "Lorem ipsum dolor sit amet" }
+                        ListElement { text: "Curabitur sit amet risus" }
+                        ListElement { text: "Suspendisse vehicula nisi" }
+                        ListElement { text: "Mauris imperdiet libero" }
+                        ListElement { text: "Sed vitae dui aliquet augue" }
+                        ListElement { text: "Praesent in elit eu nulla" }
+                        ListElement { text: "Etiam vitae magna" }
+                        ListElement { text: "Pellentesque eget elit euismod" }
+                        ListElement { text: "Nulla at enim porta" }
+                        ListElement { text: "Fusce tincidunt odio" }
+                        ListElement { text: "Ut non ex a ligula molestie" }
+                        ListElement { text: "Nam vitae justo scelerisque" }
+                        ListElement { text: "Vestibulum pulvinar tellus" }
+                        ListElement { text: "Quisque dignissim leo sed gravida" }
+                    }
                     delegate: SwipeDelegate {
                         id: delegate2
 
                         text: modelData
-
+                        width:listView2.width
                         swipe.right: Rectangle {
                             width: parent.width
                             height: parent.height
-
                             clip: true
-                            color: SwipeDelegate.pressed ? "#555" : "#666"
+                            color: SwipeDelegate.pressed ? Material.color(Material.BlueGrey,Material.Shade300):Material.color(Material.BlueGrey,Material.Shade200)
 
                             Label {
-                                font.family: "Fontello"
-                                text: delegate2.swipe.complete ? '⭕' // icon-cw-circled
-                                                              : "×" // icon-cancel-circled-1
+                                text: delegate2.swipe.complete ? '' // icon-cw-circled
+                                                              : "左滑以添加好友" // icon-cancel-circled-1
 
+                                color: "black"
+                                font.family: "Microsoft YaHei"
+                                font.pixelSize: 15
                                 padding: 20
                                 anchors.fill: parent
                                 horizontalAlignment: Qt.AlignRight
                                 verticalAlignment: Qt.AlignVCenter
-
-                                opacity: 2 * -delegate2.swipe.position
-
-                                color: Material.color(delegate2.swipe.complete ? Material.Green : Material.Red, Material.Shade200)
-                                Behavior on color { ColorAnimation { } }
+                                opacity: delegate2.swipe.complete ? 0 : 1
+                                Behavior on opacity { NumberAnimation { } }
                             }
 
                             Label {
-                                text: qsTr("Removed")
-                                color: "white"
-
+                                text: "已添加"
+                                color: "black"
+                                font.family: "Microsoft YaHei"
+                                font.pixelSize: 15
                                 padding: 20
                                 anchors.fill: parent
                                 horizontalAlignment: Qt.AlignLeft
@@ -1778,23 +1787,17 @@ Rectangle {
                                 opacity: delegate2.swipe.complete ? 1 : 0
                                 Behavior on opacity { NumberAnimation { } }
                             }
-
-                            SwipeDelegate.onClicked: delegate2.swipe.close()
-                            SwipeDelegate.onPressedChanged: undoTimer2.stop()
                         }
 
                         Timer {
                             id: undoTimer2
-                            interval: 3600
+                            interval: 1000
                             onTriggered: listModel2.remove(index)
                         }
 
                         swipe.onCompleted: undoTimer2.start()
                     }
 
-                    model: ListModel {
-                        id: listModel2
-                    }
 
                     remove: Transition {
                         SequentialAnimation {
