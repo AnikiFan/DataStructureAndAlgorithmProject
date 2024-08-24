@@ -82,12 +82,6 @@ Rectangle {
         Material.elevation: 10
         property bool appScene: false
         property bool algoScene: false
-        Keys.onPressed: (event) => {if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){
-                                Qt.quit();
-                                event.accepted = true;
-                            }
-                            else event.accepted = false;
-                        }
         ColumnLayout {
             id: menuLayout
             anchors.fill: parent
@@ -284,14 +278,6 @@ Rectangle {
                 menu.appScene = false
             }
             focus: mainWindow.state === "home" || bluredBackground.visible? false : true
-            Keys.onPressed: (event) =>{
-                                if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){
-                                    menu.algoScene = false
-                                    menu.appScene = false
-                                    event.accepted = true
-                                }
-                                else event.accepted = false
-                            }
         }
 
         // MyButton {
@@ -1089,13 +1075,6 @@ Rectangle {
         }
         Pane {
             id: importPage
-            Keys.onPressed: (event) =>{
-                                if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){
-                                    controlPanel.importOpen = false
-                                    event.accepted = true
-                                }
-                                else event.accepted = false
-                            }
             width: 400
             height: 650
             anchors.verticalCenter: parent.verticalCenter
@@ -1204,13 +1183,6 @@ Rectangle {
           }
         Pane {
             id: exportPage
-            Keys.onPressed: (event) =>{
-                                if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){
-                                    controlPanel.exportOpen = false
-                                    event.accepted = true
-                                }
-                                else event.accepted = false
-                            }
             width: 400
             height: 400
             anchors.verticalCenter: parent.verticalCenter
@@ -1286,13 +1258,6 @@ Rectangle {
         }
         Pane {
             id: addPage
-            Keys.onPressed: (event) =>{
-                                if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){
-                                    controlPanel.addOpen = false
-                                    event.accepted = true
-                                }
-                                else event.accepted = false
-                            }
             function clearInfo(){
                 nameTextField.text = ''
                 ageTextField.text = ''
@@ -1466,13 +1431,6 @@ Rectangle {
         }
         Pane {
             id: infoPage
-            Keys.onPressed: (event) =>{
-                                if(event.key===Qt.Key_Q||event.key===Qt.Key_Escape){
-                                    controlPanel.infoOpen = false
-                                    event.accepted = true
-                                }
-                                else event.accepted = false
-                            }
             width: 850
             height: 600
             anchors.verticalCenter: parent.verticalCenter
