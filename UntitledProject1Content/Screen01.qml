@@ -524,6 +524,7 @@ Rectangle {
             font.pixelSize: 20
             font.styleName: "Bold"
             font.family: "Microsoft YaHei"
+            maximumLength: 17
             font.bold: true
         }
         MyButton {
@@ -597,6 +598,15 @@ Rectangle {
                 source: "images/locate.svg"
                 anchors.centerIn: parent
                 scale: 0.25
+            }
+            onClicked: {
+                if(parseInt(searchBar.text)>=0&&graph.isValid(parseInt(searchBar.text))){
+                    console.log('find node')
+                }else if(graph.findNode(searchBar.text)!==-1){
+                    console.log('find node')
+                }else{
+                    console.log('locate failed')
+                }
             }
         }
     }

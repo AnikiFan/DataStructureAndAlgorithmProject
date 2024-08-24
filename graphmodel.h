@@ -10,14 +10,17 @@
 class GraphModel : public qan::Graph {
     Q_OBJECT
 public:
-    explicit GraphModel(QQuickItem *parent = nullptr) : qan::Graph{parent} { /* Nil */ }
+    explicit GraphModel(QQuickItem *parent = nullptr);
     virtual ~GraphModel() override  { /* Nil */ }
 private:
     GraphModel(const GraphModel &) = delete;
     WeightedGraph<qan::Node*,qan::Edge*> G;
 public:
     Q_INVOKABLE qan::Node*    insertCustomNode();
-
+    void onNodeInserted(qan::Node&node)override;
+    Q_INVOKABLE qan::Node*    getNode(long long no);
+    Q_INVOKABLE long long     findNode(const QString& );
+    Q_INVOKABLE bool          isValid(const long long);
 };
 
 QML_DECLARE_TYPE(GraphModel)

@@ -17,7 +17,8 @@ public:
     void deleteEdge(const long long, const long long);
     long long VertexCnt();
     long long EdgeCnt();
-
+    T1 getValue(const long long);
+    bool valid(const long long);
 private:
     Vector<T1> V;
     Vector<Array<long long>> E;
@@ -43,7 +44,7 @@ inline void WeightedGraph<T1, T2>::addNode(const T1 &value)
 {
     V.push_back(value);
     E.push_back(Array<long long>());
-    W.push_back(Array<long long>());
+    W.push_back(Array<T2>());
     Active.push_back(1);
     VNum++;
 }
@@ -114,5 +115,18 @@ template <typename T1, typename T2>
 inline long long WeightedGraph<T1, T2>::EdgeCnt()
 {
     return ENum;
+}
+
+template<typename T1, typename T2>
+inline T1 WeightedGraph<T1, T2>::getValue(const long long no)
+{
+    if(no<0||no>=VNum||!Active[no]){throw std::invalid_argument("WeightedGraph::getValue");}
+    return V[no];
+}
+
+template<typename T1, typename T2>
+inline bool WeightedGraph<T1, T2>::valid(const long long no)
+{
+    return !(no<0||no>=VNum||!Active[no]);
 }
 #endif // GRAPH_H
