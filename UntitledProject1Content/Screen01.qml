@@ -554,6 +554,11 @@ Rectangle {
                 if(parseInt(searchBar.text)>=0&&graph.isValid(parseInt(searchBar.text))){
                     console.log('find node')
                     node=graph.getNode(parseInt(searchBar.text))
+
+                    graph.initFriendTable(Number(node.label))
+                    listModel1 = graph.getFriendListModel()
+                    listModel2 = graph.getStrangerListModel()
+
                     graph.clearSelection()
                     graph.setNodeSelected(node,true)
                     graph.setConnectorSource(node)
@@ -578,7 +583,13 @@ Rectangle {
                 }else{
                     var result=graph.findNode(searchBar.text)
                     if(result!==-1){
+
                         node = graph.getNode(result)
+
+                        graph.initFriendTable(Number(node.label))
+                        listModel1 = graph.getFriendListModel()
+                        listModel2 = graph.getStrangerListModel()
+
                         graph.clearSelection()
                         graph.setNodeSelected(node,true)
                         graph.setConnectorSource(node)
@@ -605,7 +616,13 @@ Rectangle {
                         controlPanel.infoOpen = true
                         console.log('find node')
                     }else if(graph.hasSelection()){
+
                         node = graph.getSelectedNode()
+
+                        graph.initFriendTable(Number(node.label))
+                        listModel1 = graph.getFriendListModel()
+                        listModel2 = graph.getStrangerListModel()
+
                         graph.setConnectorSource(node)
                         graphView.centerOn(node.item)
 
@@ -838,6 +855,38 @@ Rectangle {
           property int level :0//当前有的层数
           //selectionPolicy: Qan.Graph.SelectOnClick //选择，可以用于选择详细说明的用户
           //connectorEnabled: true //允许通过拖拽生成新边
+          function addTestNode(name){
+              var node = graph.insertCustomNode()
+              node.label = graph.number
+             // console.log(graph.number,graph.level)
+
+              if(graph.number===0){
+            //      console.log('case 1')
+                  node.item.x = 0
+                  node.item.y = 0
+                  graphView.centerOnPosition(Qt.point(0,0))
+              }else if(graph.number === 3*(graph.level-1)*(graph.level)+1){//该层的第一个
+              //    console.log('case 2')
+                  node.item.x = graphView.length*graph.level
+                  node.item.y = 0
+              }else{
+                  var i = Math.floor((graph.number - (3*(graph.level-1)*(graph.level)+1)-1)/graph.level)
+            //      console.log('case 3',i,(120+60*i)*Math.PI/360)
+                  node.item.x = graphView.lastX+graphView.length*Math.cos((120+60*i)*Math.PI/180)
+                  node.item.y = graphView.lastY-graphView.length*Math.sin((120+60*i)*Math.PI/180)
+
+              }
+
+              if(graph.number === 3*graph.level*(graph.level+1)){//该层的最后一个
+           //       console.log('last')
+                  graph.level += 1
+              }
+              graphView.lastX = node.item.x
+              graphView.lastY = node.item.y
+              graph.number += 1
+
+              node.name = name
+          }
           Component.onCompleted: {    // Qan.Graph.Component.onCompleted()
                  //defaultEdgeStyle.lineType = Qan.EdgeStyle.Curved
               defaultEdgeStyle.srcShape = Qan.EdgeStyle.None
@@ -846,6 +895,24 @@ Rectangle {
               //defaultEdgeStyle.lineColor = Qt.rgba(1,0,0,1)
              selectionPolicy: Qan.Graph.SelectOnClick
               selectionDelegate = customSelectionComponent
+
+              addTestNode("一")
+              addTestNode("二")
+              addTestNode("三")
+              addTestNode("四")
+              addTestNode("五")
+              addTestNode("六")
+              addTestNode("七")
+              addTestNode("八")
+              addTestNode("九")
+              addTestNode("十")
+              addTestNode("十一")
+              addTestNode("十二")
+              addTestNode("十三")
+              addTestNode("十四")
+              addTestNode("十五")
+
+
           }
 
          connectorEnabled: true

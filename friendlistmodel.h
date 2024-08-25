@@ -3,19 +3,20 @@
 
 #include <QObject>
 #include <QtCore>
-#include"Vector.h"
 #include"friendnode.h"
 class FriendListModel:public QAbstractListModel
 {
     Q_OBJECT
 public:
-    explicit FriendListModel(Vector<FriendNode>*,QObject *parent=nullptr);
+    explicit FriendListModel(GraphModel*,QObject *parent=nullptr);
     ~FriendListModel();
 public:
     virtual int rowCount(const QModelIndex &parent) const override;
     virtual QVariant data(const QModelIndex &index, int role) const override;
 private:
-    Vector<FriendNode>*friendTable;
+    GraphModel* graphModel;
+protected:
+    virtual QHash<int, QByteArray> roleNames() const override;
 };
 
 #endif // FRIENDLISTMODEL_H

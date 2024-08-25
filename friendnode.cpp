@@ -1,18 +1,18 @@
 #include "friendnode.h"
 
 FriendNode::FriendNode()
-    :no{-1},isFriend{false},connectivity{-3}
+    :no{invalid},connectivity{0}
 {
 }
 
 FriendNode::FriendNode(const long long number)
-    :no{number},isFriend{false},connectivity(-1)
+    :no{number},connectivity(invalid)
 {
 
 }
 
-FriendNode::FriendNode(const long long number, const bool isF, const long long connect)
-    :no{number},isFriend{isF},connectivity{connect}
+FriendNode::FriendNode(const long long number,  const long long connect)
+    :no{number},connectivity{connect}
 {
 
 }
