@@ -1141,7 +1141,7 @@ Rectangle {
                         Material.background: Material.Green
                         fontsize: 30
                         onClicked: {
-                            if(parseInt(inputBox.input)<=0 ||parseInt(inputBox.input)>=0){
+                            if(parseInt(inputBox.text)<=0 ||parseInt(inputBox.text)>=0){
                                 controlPanel.importOpen=false
                                 if(HeapModel.finished){
                                     HeapModel.reload(inputBox.text)

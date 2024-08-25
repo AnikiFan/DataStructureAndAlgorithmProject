@@ -32,7 +32,10 @@ qt_add_executable(${CMAKE_PROJECT_NAME}
     graphmodel.h graphmodel.cpp
     personnode.h personnode.cpp
     Array.h
-    Graph.h)
+    Graph.h
+    friendnode.h friendnode.cpp
+    friendlistmodel.h friendlistmodel.cpp
+    strangerlistmodel.h strangerlistmodel.cpp)
 qt_add_resources(${CMAKE_PROJECT_NAME} "configuration"
     PREFIX "/"
     FILES

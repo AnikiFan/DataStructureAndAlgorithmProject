@@ -5,6 +5,9 @@
 #include <QtQml>
 #include <QQuickStyle>
 #include "Graph.h"
+#include "friendnode.h"
+#include"friendlistmodel.h"
+#include"strangerlistmodel.h"
 // QuickQanava headers
 #include <QuickQanava.h>
 class GraphModel : public qan::Graph {
@@ -16,6 +19,9 @@ private:
     GraphModel(const GraphModel &) = delete;
     WeightedGraph<qan::Node*,qan::Edge*> G;
     long long lastSelectedNode;
+    Vector<FriendNode> *friendTable;
+    FriendListModel* friendListModel;
+    StrangerListModel* strangerListModel;
 public:
     Q_INVOKABLE qan::Node*    insertCustomNode();
     void onNodeInserted(qan::Node&node)override;
@@ -26,6 +32,14 @@ public:
     Q_INVOKABLE qan::Node*    getSelectedNode();
     void onEdgeInserted(qan::Edge* edge);
     void onSelectionChanged();
+    void initFriendTable(const long long self);
+    void deleteFriendTable();
+
+    Q_PROPERTY(FriendListModel* friendList READ getFriendListModel CONSTANT FINAL)
+    FriendListModel*     getFriendListModel() const;
+
+    Q_PROPERTY(StrangerListModel* strangerList READ getStrangerListModel CONSTANT FINAL)
+    StrangerListModel*     getStrangerListModel() const;
 };
 
 QML_DECLARE_TYPE(GraphModel)

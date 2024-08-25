@@ -3,11 +3,13 @@
 #include "Array.h"
 #include "Vector.h"
 #include <stdexcept>
+class GraphModel;
 /// @brief 简单图，即不允许有环和重边！
 /// @tparam T1,T2
 template <typename T1, typename T2>
 class WeightedGraph
 {
+    friend GraphModel;
 public:
     WeightedGraph();
     ~WeightedGraph();
@@ -19,6 +21,8 @@ public:
     long long EdgeCnt();
     T1 getValue(const long long);
     bool valid(const long long);
+    void traverseW(const long long,void(*)(const T2&));
+    long long VertexSize();
 private:
     Vector<T1> V;
     Vector<Array<long long>> E;
@@ -128,5 +132,19 @@ template<typename T1, typename T2>
 inline bool WeightedGraph<T1, T2>::valid(const long long no)
 {
     return !(no<0||no>=VNum||!Active[no]);
+}
+
+template<typename T1, typename T2>
+inline void WeightedGraph<T1, T2>::traverseW(const long long i, void (*f)(const T2 &))
+{
+    if(!valid(i)){throw std::invalid_argument("WeightedGraph::traverseW");}
+    W[i].traverse(f);
+    return;
+}
+
+template<typename T1, typename T2>
+inline long long WeightedGraph<T1, T2>::VertexSize()
+{
+    return V.length();
 }
 #endif // GRAPH_H

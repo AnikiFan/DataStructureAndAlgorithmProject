@@ -288,8 +288,11 @@ void HeapModel::maintain(long long i)
                 continue;
             }
         }else{
-            if(cmp(elem[i],elem[lchild(i)])&&
-                cmp(elem[rchild(i)],elem[lchild(i)])){
+            if (
+                cmp(elem[i], elem[lchild(i)]) &&
+                (cmp(elem[rchild(i)], elem[lchild(i)]) ||
+                 (!cmp(elem[rchild(i)], elem[lchild(i)]) && !cmp(elem[lchild(i)], elem[rchild(i)]))))
+            {
                 // cout<<"case 3"<<endl;
                 this->swap(i,lchild(i));
                 if(quit()){
@@ -300,8 +303,10 @@ void HeapModel::maintain(long long i)
                 i = lchild(i);
                 continue;
             }
-            if(cmp(elem[i],elem[rchild(i)])
-                &&cmp(elem[lchild(i)],elem[rchild(i)])){
+            if (cmp(elem[i], elem[rchild(i)]) &&
+                (cmp(elem[lchild(i)], elem[rchild(i)]) ||
+                 (!cmp(elem[rchild(i)], elem[lchild(i)]) && !cmp(elem[lchild(i)], elem[rchild(i)]))))
+            {
                 // cout<<"case 4"<<endl;
                 this->swap(i,rchild(i));
                 if(quit()){

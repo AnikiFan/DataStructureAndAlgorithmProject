@@ -381,7 +381,7 @@ public:
     bool            setLineType(LineType lineType) noexcept;
     inline LineType getLineType() const noexcept { return _lineType; }
 protected:
-    LineType        _lineType = LineType::Straight;
+    LineType        _lineType = LineType::Curved;
 signals:
     void            lineTypeChanged();
 
@@ -436,7 +436,7 @@ public:
     auto                setDstShape(ArrowShape dstShape) noexcept -> bool;
 private:
     //! \copydoc dstShape
-    ArrowShape          _dstShape = ArrowShape::Arrow;
+    ArrowShape          _dstShape = ArrowShape::None;
 signals:
     void                dstShapeChanged();
 
