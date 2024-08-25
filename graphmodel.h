@@ -15,6 +15,7 @@ public:
 private:
     GraphModel(const GraphModel &) = delete;
     WeightedGraph<qan::Node*,qan::Edge*> G;
+    long long lastSelectedNode;
 public:
     Q_INVOKABLE qan::Node*    insertCustomNode();
     void onNodeInserted(qan::Node&node)override;
@@ -24,6 +25,7 @@ public:
     Q_INVOKABLE bool          isValid(const long long);
     Q_INVOKABLE qan::Node*    getSelectedNode();
     void onEdgeInserted(qan::Edge* edge);
+    void onSelectionChanged();
 };
 
 QML_DECLARE_TYPE(GraphModel)

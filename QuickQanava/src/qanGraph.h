@@ -532,17 +532,17 @@ signals:
      *
      *  \sa nodeClicked()
      */
-    void            edgeClicked(qan::Edge* edge, QPointF pos);
+  //  void            edgeClicked(qan::Edge* edge, QPointF pos);
     /*! \brief Emitted whenever a node registered in this graph is right clicked.
      *
      *  \sa nodeRightClicked()
      */
-    void            edgeRightClicked(qan::Edge* edge, QPointF pos);
+  //  void            edgeRightClicked(qan::Edge* edge, QPointF pos);
     /*! \brief Emitted whenever a node registered in this graph is double clicked.
      *
      *  \sa nodeDoubleClicked()
      */
-    void            edgeDoubleClicked(qan::Edge* edge, QPointF pos);
+  //  void            edgeDoubleClicked(qan::Edge* edge, QPointF pos);
 
     /*! \brief Emitted _after_ an edge has been inserted (usually with insertEdge()).
      */
@@ -735,11 +735,11 @@ public:
     Q_INVOKABLE bool    selectGroup(qan::Group* group);
 
     //! Set an edge selection state (usefull to unselect).
-    void                setEdgeSelected(qan::Edge* edge, bool selected);
+//    void                setEdgeSelected(qan::Edge* edge, bool selected);
 
     //! Similar to selectNode() for qan::Edge.
-    bool                selectEdge(qan::Edge& edge, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
-    Q_INVOKABLE bool    selectEdge(qan::Edge* edge);
+  //  bool                selectEdge(qan::Edge& edge, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+  //  Q_INVOKABLE bool    selectEdge(qan::Edge* edge);
 
     /*! \brief Add a node in the current selection.
      */

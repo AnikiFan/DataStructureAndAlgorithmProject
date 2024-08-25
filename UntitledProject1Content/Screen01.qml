@@ -914,9 +914,9 @@ Rectangle {
 
                                    }
           onConnectorRequestEdgeCreation: (src, dst) => { notifyUser("Requesting Edge creation from " + src.label + " to " + ( dst ? dst.label : "UNDEFINED" ) ) }
-          onEdgeClicked: (edge) => { notifyUser("Edge " + edge.label + " " + getEdgeDescription(edge) + " clicked") }
-          onEdgeDoubleClicked: (edge) => { notifyUser("Edge " + edge.label + " " + getEdgeDescription(edge) + " double clicked") }
-          onEdgeRightClicked: (edge) => { notifyUser("Edge " + edge.label + " " + getEdgeDescription(edge) + " right clicked") }
+         // onEdgeClicked: (edge) => { notifyUser("Edge " + edge.label + " " + getEdgeDescription(edge) + " clicked") }
+         // onEdgeDoubleClicked: (edge) => { notifyUser("Edge " + edge.label + " " + getEdgeDescription(edge) + " double clicked") }
+         // onEdgeRightClicked: (edge) => { notifyUser("Edge " + edge.label + " " + getEdgeDescription(edge) + " right clicked") }
         } // Qan.Graph: topology
       ToolTip {
           id: toolTip

@@ -79,12 +79,12 @@ void    GraphView::setGraph(qan::Graph* graph)
         connect(_graph, &qan::Graph::portRightClicked,
                 this,   &qan::GraphView::portRightClicked);
 
-        connect(_graph, &qan::Graph::edgeClicked,
-                this,   &qan::GraphView::edgeClicked);
-        connect(_graph, &qan::Graph::edgeRightClicked,
-                this,   &qan::GraphView::edgeRightClicked);
-        connect(_graph, &qan::Graph::edgeDoubleClicked,
-                this,   &qan::GraphView::edgeDoubleClicked);
+ //       connect(_graph, &qan::Graph::edgeClicked,
+  //              this,   &qan::GraphView::edgeClicked);
+  //      connect(_graph, &qan::Graph::edgeRightClicked,
+  //              this,   &qan::GraphView::edgeRightClicked);
+   //     connect(_graph, &qan::Graph::edgeDoubleClicked,
+   //             this,   &qan::GraphView::edgeDoubleClicked);
 
         connect(_graph, &qan::Graph::groupClicked,
                 this,   &qan::GraphView::groupClicked);
@@ -155,7 +155,7 @@ void    GraphView::selectionRectActivated(const QRectF& rect)
                 if (qFuzzyIsNull(itemBr.width()))   // horizontal line selection for example.
                     itemBr.setWidth(0.5);
                 if (!rect.contains(itemBr)) {
-                    _graph->setEdgeSelected(edgeItem->getEdge(), false);
+                    //_graph->setEdgeSelected(edgeItem->getEdge(), false);
                     _selectedItems.remove(item);
                 }
             }
@@ -191,7 +191,7 @@ void    GraphView::selectionRectActivated(const QRectF& rect)
                     itemBr.setWidth(0.5);
                 if (rect.contains(itemBr)) {
                     auto edge = edgeItem->getEdge();
-                    _graph->setEdgeSelected(edge, true);
+                    //_graph->setEdgeSelected(edge, true);
                     _selectedItems.insert(edgeItem);
                 }
             }

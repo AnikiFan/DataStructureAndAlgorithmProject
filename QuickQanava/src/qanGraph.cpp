@@ -862,26 +862,26 @@ bool    Graph::configureEdge(qan::Edge& edge, QQmlComponent& edgeComponent, qan:
     if (dst != nullptr)
         edge.set_dst(dst);
 
-    auto notifyEdgeClicked = [this] (qan::EdgeItem* edgeItem, QPointF p) {
-        if (edgeItem != nullptr && edgeItem->getEdge() != nullptr)
-            emit this->edgeClicked(edgeItem->getEdge(), p);
-    };
-    connect(edgeItem, &qan::EdgeItem::edgeClicked,
-            this,     notifyEdgeClicked);
+  //  auto notifyEdgeClicked = [this] (qan::EdgeItem* edgeItem, QPointF p) {
+   //     if (edgeItem != nullptr && edgeItem->getEdge() != nullptr)
+   //         emit this->edgeClicked(edgeItem->getEdge(), p);
+   // };
+ //   connect(edgeItem, &qan::EdgeItem::edgeClicked,
+  //          this,     notifyEdgeClicked);
 
-    auto notifyEdgeRightClicked = [this] (qan::EdgeItem* edgeItem, QPointF p) {
-        if (edgeItem != nullptr && edgeItem->getEdge() != nullptr)
-            emit this->edgeRightClicked(edgeItem->getEdge(), p);
-    };
-    connect(edgeItem,   &qan::EdgeItem::edgeRightClicked,
-            this,       notifyEdgeRightClicked);
+   // auto notifyEdgeRightClicked = [this] (qan::EdgeItem* edgeItem, QPointF p) {
+   //     if (edgeItem != nullptr && edgeItem->getEdge() != nullptr)
+   //         emit this->edgeRightClicked(edgeItem->getEdge(), p);
+  //  };
+ //   connect(edgeItem,   &qan::EdgeItem::edgeRightClicked,
+ //           this,       notifyEdgeRightClicked);
 
-    auto notifyEdgeDoubleClicked = [this] (qan::EdgeItem* edgeItem, QPointF p) {
-        if (edgeItem != nullptr && edgeItem->getEdge() != nullptr)
-            emit this->edgeDoubleClicked(edgeItem->getEdge(), p);
-    };
-    connect(edgeItem, &qan::EdgeItem::edgeDoubleClicked,
-            this,     notifyEdgeDoubleClicked);
+ //   auto notifyEdgeDoubleClicked = [this] (qan::EdgeItem* edgeItem, QPointF p) {
+  //      if (edgeItem != nullptr && edgeItem->getEdge() != nullptr)
+ //           emit this->edgeDoubleClicked(edgeItem->getEdge(), p);
+  //  };
+ //   connect(edgeItem, &qan::EdgeItem::edgeDoubleClicked,
+ //           this,     notifyEdgeDoubleClicked);
     return true;
 }
 
@@ -1271,15 +1271,15 @@ void    Graph::setNodeSelected(qan::Node* node, bool selected)
 bool    Graph::selectGroup(qan::Group& group, Qt::KeyboardModifiers modifiers) { return impl::selectPrimitive<qan::Group>(group, modifiers, *this); }
 bool    Graph::selectGroup(qan::Group* group) { return group != nullptr ? selectGroup(*group) : false; }
 
-void    Graph::setEdgeSelected(qan::Edge* edge, bool selected)
-{
-    if (edge == nullptr)
-        return;
-    impl::setPrimitiveSelected<qan::Edge>(*edge, selected, *this);
-}
+// void    Graph::setEdgeSelected(qan::Edge* edge, bool selected)
+// {
+//     if (edge == nullptr)
+//         return;
+//     impl::setPrimitiveSelected<qan::Edge>(*edge, selected, *this);
+// }
 
-bool    Graph::selectEdge(qan::Edge& edge, Qt::KeyboardModifiers modifiers) { return impl::selectPrimitive<qan::Edge>(edge, modifiers, *this); }
-bool    Graph::selectEdge(qan::Edge* edge) { return edge != nullptr ? selectEdge(*edge) : false; }
+// bool    Graph::selectEdge(qan::Edge& edge, Qt::KeyboardModifiers modifiers) { return impl::selectPrimitive<qan::Edge>(edge, modifiers, *this); }
+// bool    Graph::selectEdge(qan::Edge* edge) { return edge != nullptr ? selectEdge(*edge) : false; }
 
 template <class Primitive_t>
 void    addToSelectionImpl(QPointer<Primitive_t> primitive,

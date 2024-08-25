@@ -2,9 +2,10 @@
 #include "personnode.h"
 #include<QDebug>
 GraphModel::GraphModel(QQuickItem *parent)
-    :Graph{parent}
+    :Graph{parent},lastSelectedNode{-1}
 {
     connect(this,&GraphModel::edgeInserted,this,&GraphModel::onEdgeInserted);
+    connect(this,&GraphModel::selectionChanged,this,&GraphModel::onSelectionChanged);
 }
 
 qan::Node *GraphModel::insertCustomNode() {
@@ -56,4 +57,10 @@ void GraphModel::onEdgeInserted(qan::Edge* edge)
     G.addEdge(edge->get_dst()->getLabel().toLongLong(),edge->get_src()->getLabel().toLongLong(),edge);
     qDebug()<<"edge inserted"<<get_edge_count()<<"     "<<G.EdgeCnt()<<"     "<<getNodeCount()<<"     "<<G.VertexCnt();
     return;
+}
+
+void GraphModel::onSelectionChanged()
+{
+    //if(hasSelection()){lastSelectedNode=*_selectedNodes.begin()*}
+   qDebug()<<"has selection:"<<hasSelection();
 }
