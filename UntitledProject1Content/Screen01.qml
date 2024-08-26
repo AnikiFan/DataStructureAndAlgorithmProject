@@ -830,10 +830,6 @@ Rectangle {
         Keys.onUpPressed: vbar.decrease()
         Keys.onDownPressed: vbar.increase()
     }
-    Component {
-        id: customSelectionComponent
-        SelectionDelegate { }
-    }
     Qan.GraphView {
       id: graphView
       property int centerX:mainWindow.width/2
@@ -894,7 +890,6 @@ Rectangle {
              defaultEdgeStyle.lineType=Qan.EdgeStyle.Curved
               //defaultEdgeStyle.lineColor = Qt.rgba(1,0,0,1)
              selectionPolicy: Qan.Graph.SelectOnClick
-              selectionDelegate = customSelectionComponent
 
               addTestNode("一")
               addTestNode("二")

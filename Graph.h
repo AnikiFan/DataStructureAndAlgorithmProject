@@ -10,6 +10,7 @@ template <typename T1, typename T2>
 class WeightedGraph
 {
     friend GraphModel;
+
 public:
     WeightedGraph();
     ~WeightedGraph();
@@ -21,8 +22,9 @@ public:
     long long EdgeCnt();
     T1 getValue(const long long);
     bool valid(const long long);
-    void traverseW(const long long,void(*)(const T2&));
+    void traverseW(const long long, void (*)(const T2 &));
     long long VertexSize();
+
 private:
     Vector<T1> V;
     Vector<Array<long long>> E;
@@ -56,7 +58,7 @@ inline void WeightedGraph<T1, T2>::addNode(const T1 &value)
 template <typename T1, typename T2>
 inline void WeightedGraph<T1, T2>::deleteNode(const long long i)
 {
-    if (i < 0 || i > V.length() || !Active[i])
+    if (!valid(i))
     {
         throw std::invalid_argument("Graph::deleteNode");
     }
@@ -78,7 +80,7 @@ inline void WeightedGraph<T1, T2>::deleteNode(const long long i)
 template <typename T1, typename T2>
 inline void WeightedGraph<T1, T2>::addEdge(const long long i, const long long j, const T2 &val)
 {
-    if (i == j || i < 0 || i >= V.length() || !Active[i] || j < 0 || j >= V.length() || !Active[j])
+    if (i == j || !valid(i) || !valid(j))
     {
         throw std::invalid_argument("Graph::addEdge");
     }
@@ -93,7 +95,7 @@ inline void WeightedGraph<T1, T2>::addEdge(const long long i, const long long j,
 template <typename T1, typename T2>
 inline void WeightedGraph<T1, T2>::deleteEdge(const long long i, const long long j)
 {
-    if (i == j || i < 0 || i >= V.length() || !Active[i] || j < 0 || j >= V.length() || !Active[j])
+    if (i == j || !valid(i) || !valid(j))
     {
         throw std::invalid_argument("Graph::deleteEdge");
     }
@@ -121,28 +123,34 @@ inline long long WeightedGraph<T1, T2>::EdgeCnt()
     return ENum;
 }
 
-template<typename T1, typename T2>
+template <typename T1, typename T2>
 inline T1 WeightedGraph<T1, T2>::getValue(const long long no)
 {
-    if(no<0||no>=VNum||!Active[no]){throw std::invalid_argument("WeightedGraph::getValue");}
+    if (!valid(no))
+    {
+        throw std::invalid_argument("WeightedGraph::getValue");
+    }
     return V[no];
 }
 
-template<typename T1, typename T2>
+template <typename T1, typename T2>
 inline bool WeightedGraph<T1, T2>::valid(const long long no)
 {
-    return !(no<0||no>=VNum||!Active[no]);
+    return !(no < 0 || no >= VertexSize() || !Active[no]);
 }
 
-template<typename T1, typename T2>
+template <typename T1, typename T2>
 inline void WeightedGraph<T1, T2>::traverseW(const long long i, void (*f)(const T2 &))
 {
-    if(!valid(i)){throw std::invalid_argument("WeightedGraph::traverseW");}
+    if (!valid(i))
+    {
+        throw std::invalid_argument("WeightedGraph::traverseW");
+    }
     W[i].traverse(f);
     return;
 }
 
-template<typename T1, typename T2>
+template <typename T1, typename T2>
 inline long long WeightedGraph<T1, T2>::VertexSize()
 {
     return V.length();
