@@ -153,6 +153,7 @@ Rectangle {
                     content: "综合应用：社会关系网络"
                     onClicked: {
                         menu.appScene = true
+                        graphView.centerOnPosition(Qt.point(0,0))
                     }
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -854,7 +855,7 @@ Rectangle {
           property int level :0//当前有的层数
           //selectionPolicy: Qan.Graph.SelectOnClick //选择，可以用于选择详细说明的用户
           //connectorEnabled: true //允许通过拖拽生成新边
-          function addTestNode(name){
+          function addTestNode(name=undefined,age=undefined,gender=undefined,school=undefined,company=undefined,motto=undefined){
               var node = graph.insertCustomNode()
               node.label = graph.number
              // console.log(graph.number,graph.level)
@@ -884,7 +885,13 @@ Rectangle {
               graphView.lastY = node.item.y
               graph.number += 1
 
-              node.name = name
+              if(name!==undefined){node.name = name}
+              if(age!==undefined){node.age = age}
+              if(gender!==undefined){node.gender = gender}
+              if(school!==undefined){node.school = name}
+              if(company!==undefined){node.company = name}
+              if(motto!==undefined){node.motto=motto}
+              return node
           }
           Component.onCompleted: {    // Qan.Graph.Component.onCompleted()
                  //defaultEdgeStyle.lineType = Qan.EdgeStyle.Curved
@@ -894,21 +901,109 @@ Rectangle {
               //defaultEdgeStyle.lineColor = Qt.rgba(1,0,0,1)
              selectionPolicy: Qan.Graph.SelectOnClick
 
-              addTestNode("一")
-              addTestNode("二")
-              addTestNode("三")
-              addTestNode("四")
-              // addTestNode("五")
-              // addTestNode("六")
-              // addTestNode("七")
-              // addTestNode("八")
-              // addTestNode("九")
-              // addTestNode("十")
-              // addTestNode("十一")
-              // addTestNode("十二")
-              // addTestNode("十三")
-              // addTestNode("十四")
-              // addTestNode("十五")
+              var node1=addTestNode(
+                          "Rei",
+                          undefined,
+                          PersonNode.Female,
+                          undefined,
+                          "NERV",
+                          "…………………………"
+                          )
+
+              var node2=addTestNode(
+                          "明日香",
+                          14,
+                          PersonNode.Female,
+                          undefined,
+                          "NERV",
+                          "你白痴呀？"
+                          )
+
+              var node3=addTestNode(
+                          "碇真嗣",
+                          14,
+                          PersonNode.Male,
+                          undefined,
+                          "NERV",
+                          "不能逃避！"
+                          )
+
+              var node4=addTestNode(
+                          "葛城美里",
+                          29,
+                          PersonNode.Female,
+                          undefined,
+                          "NERV",
+                          undefined
+                          )
+
+              var node5=addTestNode(
+                          "Penpen",
+                          undefined,
+                          PersonNode.Other,
+                          undefined,
+                          undefined,
+                          undefined
+                          )
+
+              var node6=addTestNode(
+                          "渚薰",
+                          1000,
+                          PersonNode.Other,
+                          undefined,
+                          "NERV",
+                          undefined
+                          )
+
+              var node7=addTestNode(
+                          "赤木律子",
+                          30,
+                          PersonNode.Female,
+                          undefined,
+                          "NERV",
+                          undefined
+                          )
+
+              var node8=addTestNode(
+                          "伊吹摩耶",
+                          24,
+                          PersonNode.Female,
+                          undefined,
+                          "NERV",
+                          undefined
+                          )
+
+              var node9=addTestNode(
+                          "铃原冬二",
+                          24,
+                          PersonNode.Male,
+                          "第3新东京市第一中学校",
+                          undefined,
+                          undefined
+                          )
+
+              var node10=addTestNode(
+                          "加持良治",
+                          31,
+                          PersonNode.Male,
+                          undefined,
+                          "SEELE",
+                          undefined
+                          )
+
+              graph.insertEdge( node1,   node2  )
+              graph.insertEdge( node1,   node3  )
+              graph.insertEdge( node2,   node3  )
+              graph.insertEdge( node2,   node4  )
+              graph.insertEdge( node3,   node4  )
+              graph.insertEdge( node3,   node6  )
+              graph.insertEdge( node3,   node9  )
+              graph.insertEdge( node3,   node10 )
+              graph.insertEdge( node4,   node5  )
+              graph.insertEdge( node4,   node7  )
+              graph.insertEdge( node4,   node10 )
+              graph.insertEdge( node7,   node8  )
+              graph.insertEdge( node7,   node10 )
 
 
           }
@@ -1637,6 +1732,7 @@ Rectangle {
                 }
                 ToolSeparator{
                     Layout.fillHeight: true
+                    Material.elevation:10
                 }
                 ListView {
                     Layout.preferredWidth:200
@@ -1678,8 +1774,33 @@ Rectangle {
                     delegate: SwipeDelegate {
                         id: delegate1
                         width:listView1.width
-                        text: model.name
-
+                        contentItem:ColumnLayout{
+                            id:friendCard
+                            implicitHeight: 50
+                            implicitWidth: listView1.width
+                            Layout.alignment:Qt.AlignLeft
+                            Label{
+                                Layout.fillHeight: true
+                                Layout.fillWidth: true
+                                verticalAlignment: Qt.AlignVCenter
+                                horizontalAlignment: Qt.AlignLeft
+                                text:'#'+model.no+"："+model.name
+                                color: "black"
+                                font.family: "Microsoft YaHei"
+                                font.pixelSize: 15
+                            }
+                            Label{
+                                Layout.fillHeight: true
+                                Layout.fillWidth: true
+                                verticalAlignment: Qt.AlignVCenter
+                                horizontalAlignment: Qt.AlignLeft
+                                text:model.motto
+                                color: "black"
+                                font.family: "Microsoft YaHei"
+                                font.pixelSize: 13
+                                font.italic: true
+                            }
+                        }
                         swipe.left: Rectangle {
                             width: parent.width
                             height: parent.height
@@ -1696,7 +1817,7 @@ Rectangle {
                                 anchors.fill: parent
                                 horizontalAlignment: Qt.AlignLeft
                                 verticalAlignment: Qt.AlignVCenter
-                                opacity: delegate1.swipe.complete ? 0 : 1
+                                opacity: delegate1.swipe.complete ? 0 : 0.5
                                 Behavior on opacity { NumberAnimation { } }
                             }
                             Label {
@@ -1766,6 +1887,7 @@ Rectangle {
                 }
                 ToolSeparator{
                     Layout.fillHeight: true
+                    Material.elevation: 10
                 }
                 ListView {
                     id: listView2
@@ -1806,8 +1928,47 @@ Rectangle {
                     }
                     delegate: SwipeDelegate {
                         id: delegate2
-
-                        text: model.name+' 关联度：'+model.connectivity
+                        contentItem:ColumnLayout{
+                            id:strangerCard
+                            implicitWidth: listView2.width
+                            implicitHeight: 50
+                            RowLayout{
+                                Layout.fillHeight: true
+                                Layout.fillWidth: true
+                                Label{
+                                    Layout.fillHeight: true
+                                    Layout.fillWidth: true
+                                    verticalAlignment: Qt.AlignVCenter
+                                    horizontalAlignment: Qt.AlignLeft
+                                    text:'#'+model.no+"："+model.name
+                                    color: "black"
+                                    font.family: "Microsoft YaHei"
+                                    font.pixelSize: 15
+                                }
+                                Label{
+                                    Layout.fillHeight: true
+                                    Layout.fillWidth: true
+                                    verticalAlignment: Qt.AlignVCenter
+                                    horizontalAlignment: Qt.AlignRight
+                                    text:"关联度："+model.connectivity
+                                    color: "black"
+                                    font.family: "Microsoft YaHei"
+                                    font.pixelSize: 13
+                                }
+                            }
+                            Label{
+                                Layout.fillHeight: true
+                                Layout.fillWidth: true
+                                verticalAlignment: Qt.AlignVCenter
+                                horizontalAlignment: Qt.AlignLeft
+                                text:model.motto
+                                color: "black"
+                                font.family: "Microsoft YaHei"
+                                font.pixelSize: 13
+                                font.italic: true
+                            }
+                            width:listView2.width
+                        }
                         width:listView2.width
                         swipe.right: Rectangle {
                             width: parent.width
@@ -1826,7 +1987,7 @@ Rectangle {
                                 anchors.fill: parent
                                 horizontalAlignment: Qt.AlignRight
                                 verticalAlignment: Qt.AlignVCenter
-                                opacity: delegate2.swipe.complete ? 0 : 1
+                                opacity: delegate2.swipe.complete ? 0 : 0.5
                                 Behavior on opacity { NumberAnimation { } }
                             }
 

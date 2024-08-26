@@ -67,7 +67,7 @@ Q_PROPERTY(int age READ getAge WRITE setAge NOTIFY ageChanged FINAL)
 void             setAge(const int& age);
 int             getAge() const ;
 private:
-int         _age = 0;
+int         _age = -1;
 signals:
 void            ageChanged();
 

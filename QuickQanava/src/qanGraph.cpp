@@ -737,7 +737,8 @@ qan::Edge*  Graph::insertEdge(QObject* source, QObject* destination, QQmlCompone
     }
     if (edge != nullptr) {
         QQmlEngine::setObjectOwnership(edge, QQmlEngine::CppOwnership);
-        emit edgeInserted(edge);
+     //   emit edgeInserted(edge);
+
     } else
         qWarning() << "qan::Graph::insertEdge(): Error: Unable to find a valid insertEdge() method for arguments " << source << " and " << destination;
     return edge;

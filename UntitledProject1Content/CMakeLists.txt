@@ -12,7 +12,7 @@ qt6_add_qml_module(UntitledProject1Content
 		"App.qml"
 		"Screen01.qml"
                 "PersonNode.qml"
-                "SelectionDelegate.qml"
+
                 "MyText.qml"
                 "MyButton.qml"
                 "MyTextField.qml"
