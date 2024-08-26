@@ -9,7 +9,8 @@ template <typename T>
 class Vector
 {
 public:
-    explicit Vector(long long s = 0);
+    Vector();
+    explicit Vector(long long s);
     Vector(std::initializer_list<T> initList);
     Vector(const Vector<T> &);
     Vector(T *, T *);
@@ -80,12 +81,26 @@ const T *end(const Vector<T> &x)
 /// @brief 构造函数，指定初始时的申请的个数
 /// @tparam T
 /// @param s 个数，应非负
+template<typename T>
+inline Vector<T>::Vector()
+{
+    elem = nullptr;
+    len = 0;
+    sz = 0;
+}
+
 template <typename T>
 inline Vector<T>::Vector(long long s)
 {
     if (s < 0)
     {
         throw std::invalid_argument("Vector::Vector");
+    }
+    if(!s){
+        elem = nullptr;
+        len = 0;
+        sz = 0;
+        return;
     }
     elem = new T[s];
     if (!elem)

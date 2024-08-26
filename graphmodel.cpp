@@ -28,7 +28,10 @@ QHash<int, QByteArray> GraphModel::roleNames() const
 
 void GraphModel::updateNumberTable()
 {
-    for(long long i{0};i<G.VertexSize();i++){(*numberTable)[(*friendTable)[i].no]=i;}
+    for(long long i{0};i<G.VertexSize();i++){
+        qDebug()<<"no:"<<(*friendTable)[i].no;
+        (*numberTable)[(*friendTable)[i].no]=i;
+    }
     return ;
 }
 
@@ -112,7 +115,7 @@ void GraphModel::onSelectionChanged()
 
 void GraphModel::initFriendTable(const long long self)
 {
-    friendTable = new Vector<FriendNode>(G.VertexSize());
+    friendTable = new Vector<FriendNode>;
     friendNum = 0;
     for(long long i{0};i<G.VertexSize();i++){
         if(!G.Active[i]){friendTable->push_back(
@@ -122,15 +125,19 @@ void GraphModel::initFriendTable(const long long self)
         else{friendTable->push_back(FriendNode{i,0});}
     }
     (*friendTable)[self].connectivity = FriendNode::invalid;
-    Node<long long>*p{G.E[self].getHead()};
+    qDebug()<<G.E.length();
+    qDebug()<<G.E[self].length();
+    qDebug()<<G.E[self].getHead();
+
+    Node<long long>* p{G.E[self].getHead()};
     while(p){
         friendNum ++;
         (*friendTable)[p->getValue()].connectivity = FriendNode::isFriend;
-        qDebug()<<"set node"<<p->getValue()<<"friend";
-        p = p->getNext();
-    }
+         qDebug()<<"set node"<<p->getValue()<<"friend";
+         p = p->getNext();
+     }
     for(long long i{0};i<G.VertexSize();i++){
-        if((*friendTable)[i].connectivity==FriendNode::isFriend||(*friendTable)[i].connectivity==FriendNode::invalid){continue;}
+       if((*friendTable)[i].connectivity==FriendNode::isFriend||(*friendTable)[i].connectivity==FriendNode::invalid){continue;}
         Node<long long>*p{G.E[i].getHead()};
         while(p){
             if((*friendTable)[p->getValue()].connectivity==FriendNode::isFriend){
@@ -144,7 +151,13 @@ void GraphModel::initFriendTable(const long long self)
     strangerListModel = new StrangerListModel{this,this};
     friendTable->sort(friendTable->begin(),friendTable->end(),[](const FriendNode &x,const FriendNode& y){return x.connectivity>y.connectivity;});
     numberTable = new Vector<long long>(G.VertexSize());
+    for(long long i{0};i<G.VertexSize();i++){numberTable->push_back(-1);}
+    qDebug()<<"Length:"<<numberTable->length();
     updateNumberTable();
+    qDebug()<<"finish initialize friend table";
+    for(long long i{0};i<G.VertexSize();i++){qDebug()<<"no:"<<(*friendTable)[i].no<<"关联度"<<(*friendTable)[i].connectivity;}
+    qDebug()<<"对应关系";
+    for(long long i{0};i<G.VertexSize();i++){qDebug()<<'#'<<i<<"->friendTable["<<(*numberTable)[i]<<']';}
     return;
 }
 

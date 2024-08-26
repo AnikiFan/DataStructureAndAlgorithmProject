@@ -620,8 +620,8 @@ Rectangle {
                         node = graph.getSelectedNode()
 
                         graph.initFriendTable(Number(node.label))
-                        listModel1 = graph.getFriendListModel()
-                        listModel2 = graph.getStrangerListModel()
+                        listView1.model = graph.getFriendListModel()
+                        listView2.model = graph.getStrangerListModel()
 
                         graph.setConnectorSource(node)
                         graphView.centerOn(node.item)
@@ -895,17 +895,17 @@ Rectangle {
               addTestNode("二")
               addTestNode("三")
               addTestNode("四")
-              addTestNode("五")
-              addTestNode("六")
-              addTestNode("七")
-              addTestNode("八")
-              addTestNode("九")
-              addTestNode("十")
-              addTestNode("十一")
-              addTestNode("十二")
-              addTestNode("十三")
-              addTestNode("十四")
-              addTestNode("十五")
+              // addTestNode("五")
+              // addTestNode("六")
+              // addTestNode("七")
+              // addTestNode("八")
+              // addTestNode("九")
+              // addTestNode("十")
+              // addTestNode("十一")
+              // addTestNode("十二")
+              // addTestNode("十三")
+              // addTestNode("十四")
+              // addTestNode("十五")
 
 
           }
@@ -1670,7 +1670,7 @@ Rectangle {
                     delegate: SwipeDelegate {
                         id: delegate1
                         width:listView1.width
-                        text: modelData
+                        text: model.name
 
                         swipe.left: Rectangle {
                             width: parent.width
@@ -1715,23 +1715,7 @@ Rectangle {
                         swipe.onCompleted: undoTimer1.start()
                     }
 
-                    model: ListModel {
-                        id: listModel1
-                        ListElement { text: "Lorem ipsum dolor sit amet" }
-                        ListElement { text: "Curabitur sit amet risus" }
-                        ListElement { text: "Suspendisse vehicula nisi" }
-                        ListElement { text: "Mauris imperdiet libero" }
-                        ListElement { text: "Sed vitae dui aliquet augue" }
-                        ListElement { text: "Praesent in elit eu nulla" }
-                        ListElement { text: "Etiam vitae magna" }
-                        ListElement { text: "Pellentesque eget elit euismod" }
-                        ListElement { text: "Nulla at enim porta" }
-                        ListElement { text: "Fusce tincidunt odio" }
-                        ListElement { text: "Ut non ex a ligula molestie" }
-                        ListElement { text: "Nam vitae justo scelerisque" }
-                        ListElement { text: "Vestibulum pulvinar tellus" }
-                        ListElement { text: "Quisque dignissim leo sed gravida" }
-                    }
+
 
                     remove: Transition {
                         SequentialAnimation {
@@ -1793,27 +1777,10 @@ Rectangle {
                         font.bold: true
                         visible:listView2.count!==0
                     }
-                    model: ListModel {
-                        id: listModel2
-                        ListElement { text: "Lorem ipsum dolor sit amet" }
-                        ListElement { text: "Curabitur sit amet risus" }
-                        ListElement { text: "Suspendisse vehicula nisi" }
-                        ListElement { text: "Mauris imperdiet libero" }
-                        ListElement { text: "Sed vitae dui aliquet augue" }
-                        ListElement { text: "Praesent in elit eu nulla" }
-                        ListElement { text: "Etiam vitae magna" }
-                        ListElement { text: "Pellentesque eget elit euismod" }
-                        ListElement { text: "Nulla at enim porta" }
-                        ListElement { text: "Fusce tincidunt odio" }
-                        ListElement { text: "Ut non ex a ligula molestie" }
-                        ListElement { text: "Nam vitae justo scelerisque" }
-                        ListElement { text: "Vestibulum pulvinar tellus" }
-                        ListElement { text: "Quisque dignissim leo sed gravida" }
-                    }
                     delegate: SwipeDelegate {
                         id: delegate2
 
-                        text: modelData
+                        text: model.name
                         width:listView2.width
                         swipe.right: Rectangle {
                             width: parent.width

@@ -14,13 +14,14 @@ StrangerListModel::~StrangerListModel()
 
 int StrangerListModel::rowCount(const QModelIndex &parent) const
 {
-    return graphModel->G.VertexCnt()-graphModel->friendNum;
+    qDebug()<<"Stranger num:"<<graphModel->G.VertexCnt()-graphModel->friendNum-1;
+    return graphModel->G.VertexCnt()-graphModel->friendNum-1;
 }
 
 QVariant StrangerListModel::data(const QModelIndex &index, int role) const
 {
     int row = index.row();
-    if(row < 0 || row >= graphModel->friendNum) {
+    if(row < 0 || row >= graphModel->G.VertexCnt()-graphModel->friendNum-1) {
         return QVariant();
     }
     qan::Node *node=graphModel->G.getValue((*(graphModel->friendTable))[index.row()].no);

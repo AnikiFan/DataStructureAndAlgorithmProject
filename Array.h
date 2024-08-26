@@ -12,6 +12,7 @@ public:
     T getValue();
     Node *getNext();
     Node(const T &val);
+    Node();
 
 private:
     T value;
@@ -192,7 +193,13 @@ Node<T> *Node<T>::getNext()
 
 template <typename T>
 inline Node<T>::Node(const T &val)
-    : value{val}
+    : value{val},next{nullptr}
+{
+}
+
+template<typename T>
+inline Node<T>::Node()
+    :value{T()},next{nullptr}
 {
 }
 
