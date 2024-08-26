@@ -5,12 +5,27 @@
 FriendListModel::FriendListModel(GraphModel* model, QObject *parent)
     :graphModel{model},QAbstractListModel{parent}
 {
-
+    connect(this,&FriendListModel::beginReset,this,&FriendListModel::beginResetModel);
+    connect(this,&FriendListModel::endReset,this,&FriendListModel::endResetModel);
 }
 
 FriendListModel::~FriendListModel()
 {
 
+}
+
+bool FriendListModel::removeRows(int row,int count, const QModelIndex&parent)
+{
+    beginRemoveRows(parent,row,row+count-1);
+    qDebug()<<"remove row"<<row;
+    emit beginUpdateStrangerList();
+    long long removed{graphModel->G.getValue((*(graphModel->friendTable))[graphModel->G.VertexCnt()-graphModel->friendNum+row-1].no)->getLabel().toLongLong()};
+    qDebug()<<"deleteEdge:"<<graphModel->self()<<removed;
+    graphModel->G.deleteEdge(graphModel->self(),removed);
+    graphModel->updateFriendTableOnRemovingFriend(removed);
+    endRemoveRows();
+    emit endUpdateStrangerList();
+    return true;
 }
 
 int FriendListModel::rowCount(const QModelIndex &parent) const

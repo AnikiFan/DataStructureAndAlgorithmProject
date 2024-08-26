@@ -17,11 +17,13 @@ class GraphModel : public qan::Graph {
 public:
     explicit GraphModel(QQuickItem *parent = nullptr);
     virtual ~GraphModel() override  { /* Nil */ }
+    Q_PROPERTY(long long self READ self WRITE setSelf NOTIFY selfChanged FINAL)
 protected:
     enum RoleNames{
         NoRole = Qt::UserRole,
         NameRole = Qt::UserRole+1,
-        MottoRole = Qt::UserRole+2
+        MottoRole = Qt::UserRole+2,
+        ConnectivityRole = Qt::UserRole+3
     };
     /// @brief QML系统所需
     QHash<int, QByteArray> m_roleNames;
@@ -35,7 +37,10 @@ private:
     StrangerListModel* strangerListModel;
     Vector<long long>* numberTable;
     void updateNumberTable();
+    void updateFriendTableOnRemovingFriend(const long long);
     long long friendNum;
+    long long m_self;
+
 public:
     Q_INVOKABLE qan::Node*    insertCustomNode();
     void onNodeInserted(qan::Node&node)override;
@@ -47,7 +52,7 @@ public:
     void onEdgeInserted(qan::Edge* edge);
     void edgeRemoved(qan::Edge*edge);
     void onSelectionChanged();
-    Q_INVOKABLE void initFriendTable(const long long self);
+    Q_INVOKABLE void initFriendTable();
     void deleteFriendTable();
 
     Q_PROPERTY(FriendListModel* friendList READ getFriendListModel CONSTANT FINAL)
@@ -55,6 +60,10 @@ public:
 
     Q_PROPERTY(StrangerListModel* strangerList READ getStrangerListModel CONSTANT FINAL)
     Q_INVOKABLE StrangerListModel*     getStrangerListModel() const;
+    long long self() const;
+    void setSelf(long long newSelf);
+signals:
+    void selfChanged();
 };
 
 QML_DECLARE_TYPE(GraphModel)

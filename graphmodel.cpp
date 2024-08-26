@@ -9,10 +9,12 @@ GraphModel::GraphModel(QQuickItem *parent)
     ,strangerListModel{nullptr}
     ,numberTable{nullptr}
     ,friendNum{-1}
+    ,m_self{-1}
 {
     m_roleNames[NoRole] = "no";
     m_roleNames[NameRole] = "name";
     m_roleNames[MottoRole] = "motto";
+    m_roleNames[ConnectivityRole] = "connectivity";
     connect(this,&GraphModel::edgeInserted,this,&GraphModel::onEdgeInserted);
     connect(this,&GraphModel::onEdgeRemoved,this,&GraphModel::edgeRemoved);
     connect(this,&GraphModel::selectionChanged,this,&GraphModel::onSelectionChanged);
@@ -33,6 +35,21 @@ void GraphModel::updateNumberTable()
         (*numberTable)[(*friendTable)[i].no]=i;
     }
     return ;
+}
+
+void GraphModel::updateFriendTableOnRemovingFriend(const long long removed)
+{
+    Node<long long>*p{G.E[removed].getHead()};
+    friendNum --;
+    (*friendTable)[(*numberTable)[removed]].connectivity = 0;
+    while(p){
+        if((*friendTable)[(*numberTable)[p->getValue()]].connectivity>0){(*friendTable)[(*numberTable)[p->getValue()]].connectivity--;}
+        else if((*friendTable)[(*numberTable)[p->getValue()]].connectivity==FriendNode::isFriend){(*friendTable)[(*numberTable)[removed]].connectivity++;}
+        p = p->getNext();
+    }
+    friendTable->sort(friendTable->begin(),friendTable->end(),[](const FriendNode &x,const FriendNode& y){return x.connectivity>y.connectivity;});
+    updateNumberTable();
+    return;
 }
 
 qan::Node *GraphModel::insertCustomNode() {
@@ -113,7 +130,7 @@ void GraphModel::onSelectionChanged()
    // qDebug()<<"has selection:"<<hasSelection();
 }
 
-void GraphModel::initFriendTable(const long long self)
+void GraphModel::initFriendTable()
 {
     friendTable = new Vector<FriendNode>;
     friendNum = 0;
@@ -124,12 +141,12 @@ void GraphModel::initFriendTable(const long long self)
         }
         else{friendTable->push_back(FriendNode{i,0});}
     }
-    (*friendTable)[self].connectivity = FriendNode::invalid;
+    (*friendTable)[self()].connectivity = FriendNode::invalid;
     qDebug()<<G.E.length();
-    qDebug()<<G.E[self].length();
-    qDebug()<<G.E[self].getHead();
+    qDebug()<<G.E[self()].length();
+    qDebug()<<G.E[self()].getHead();
 
-    Node<long long>* p{G.E[self].getHead()};
+    Node<long long>* p{G.E[self()].getHead()};
     while(p){
         friendNum ++;
         (*friendTable)[p->getValue()].connectivity = FriendNode::isFriend;
@@ -149,6 +166,8 @@ void GraphModel::initFriendTable(const long long self)
     }
     friendListModel = new FriendListModel{this,this};
     strangerListModel = new StrangerListModel{this,this};
+    connect(friendListModel,&FriendListModel::beginUpdateStrangerList,strangerListModel,&StrangerListModel::beginReset);
+    connect(friendListModel,&FriendListModel::endUpdateStrangerList,strangerListModel,&StrangerListModel::endReset);
     friendTable->sort(friendTable->begin(),friendTable->end(),[](const FriendNode &x,const FriendNode& y){return x.connectivity>y.connectivity;});
     numberTable = new Vector<long long>(G.VertexSize());
     for(long long i{0};i<G.VertexSize();i++){numberTable->push_back(-1);}
@@ -179,4 +198,17 @@ FriendListModel *GraphModel::getFriendListModel() const
 StrangerListModel *GraphModel::getStrangerListModel() const
 {
     return strangerListModel;
+}
+
+long long GraphModel::self() const
+{
+    return m_self;
+}
+
+void GraphModel::setSelf(long long newSelf)
+{
+    if (m_self == newSelf)
+        return;
+    m_self = newSelf;
+    emit selfChanged();
 }

@@ -555,7 +555,8 @@ Rectangle {
                     console.log('find node')
                     node=graph.getNode(parseInt(searchBar.text))
 
-                    graph.initFriendTable(Number(node.label))
+                    graph.self = Number(node.label)
+                    graph.initFriendTable()
                     listModel1 = graph.getFriendListModel()
                     listModel2 = graph.getStrangerListModel()
 
@@ -586,7 +587,8 @@ Rectangle {
 
                         node = graph.getNode(result)
 
-                        graph.initFriendTable(Number(node.label))
+                        graph.self = Number(node.label)
+                        graph.initFriendTable()
                         listModel1 = graph.getFriendListModel()
                         listModel2 = graph.getStrangerListModel()
 
@@ -619,7 +621,8 @@ Rectangle {
 
                         node = graph.getSelectedNode()
 
-                        graph.initFriendTable(Number(node.label))
+                        graph.self = Number(node.label)
+                        graph.initFriendTable()
                         listView1.model = graph.getFriendListModel()
                         listView2.model = graph.getStrangerListModel()
 
@@ -1625,7 +1628,7 @@ Rectangle {
                                 anchors.centerIn: parent
                                 source: 'images/delete.svg'
                                 fillMode: Image.Pad
-                                scale:0.2
+                                scale:0.25
                             }
                             onActivated: {
                                 progress = 0
@@ -1709,7 +1712,10 @@ Rectangle {
                         Timer {
                             id: undoTimer1
                             interval: 1000
-                            onTriggered: listModel1.remove(index)
+                            onTriggered: {
+                                console.log('remove friend')
+                                listView1.model.removeRows(index,1)
+                            }
                         }
 
                         swipe.onCompleted: undoTimer1.start()
@@ -1764,7 +1770,7 @@ Rectangle {
                     Layout.preferredWidth: 200
                     header:Label{
                         anchors.horizontalCenter: parent.horizontalCenter
-                        text: '待添加好友'
+                        text: '您可能认识的成员'
                         font.pixelSize: 20
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
@@ -1780,7 +1786,7 @@ Rectangle {
                     delegate: SwipeDelegate {
                         id: delegate2
 
-                        text: model.name
+                        text: model.name+' 关联度：'+model.connectivity
                         width:listView2.width
                         swipe.right: Rectangle {
                             width: parent.width

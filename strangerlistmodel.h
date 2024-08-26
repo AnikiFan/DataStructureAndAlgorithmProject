@@ -8,6 +8,7 @@ class GraphModel;
 class StrangerListModel:public QAbstractListModel
 {
     Q_OBJECT
+    friend FriendListModel;
 public:
     explicit StrangerListModel(GraphModel*, QObject *parent=nullptr);
     ~StrangerListModel();
@@ -18,6 +19,9 @@ private:
     GraphModel* graphModel;
 protected:
     virtual QHash<int, QByteArray> roleNames() const override;
+signals:
+    void beginReset();
+    void endReset();
 };
 
 #endif // STRANGERLISTMODEL_H

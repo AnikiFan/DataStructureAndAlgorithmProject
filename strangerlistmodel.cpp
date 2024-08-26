@@ -4,7 +4,8 @@
 StrangerListModel::StrangerListModel(GraphModel*model, QObject *parent)
     :graphModel{model},QAbstractListModel{parent}
 {
-
+    connect(this,&StrangerListModel::beginReset,this,&StrangerListModel::beginResetModel);
+    connect(this,&StrangerListModel::endReset,this,&StrangerListModel::endResetModel);
 }
 
 StrangerListModel::~StrangerListModel()
@@ -32,6 +33,8 @@ QVariant StrangerListModel::data(const QModelIndex &index, int role) const
         return (static_cast<PersonNode*>(node))->getName();
     case GraphModel::MottoRole:
         return (static_cast<PersonNode*>(node))->getMotto();
+    case GraphModel::ConnectivityRole:
+        return (*(graphModel->friendTable))[(*(graphModel->numberTable))[(static_cast<PersonNode*>(node))->getLabel().toLongLong()]].connectivity;
     }
     return QVariant();
 }
