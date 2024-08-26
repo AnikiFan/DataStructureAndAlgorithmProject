@@ -551,6 +551,7 @@ signals:
     /*! \brief Emitted immediately _before_ an edge is removed.
      */
     void            onEdgeRemoved(qan::Edge* edge);
+    void            myEdgeRemoved(qan::Node*,qan::Node*);
     //@}
     //-------------------------------------------------------------------------
 

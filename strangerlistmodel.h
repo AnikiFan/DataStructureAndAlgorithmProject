@@ -12,6 +12,7 @@ class StrangerListModel:public QAbstractListModel
 public:
     explicit StrangerListModel(GraphModel*, QObject *parent=nullptr);
     ~StrangerListModel();
+    virtual bool removeRows(int,int,const QModelIndex&parent=QModelIndex())override;
 public:
     virtual int rowCount(const QModelIndex &parent) const override;
     virtual QVariant data(const QModelIndex &index, int role) const override;
@@ -22,6 +23,8 @@ protected:
 signals:
     void beginReset();
     void endReset();
+    void beginUpdateFriendList();
+    void endUpdateFriendList();
 };
 
 #endif // STRANGERLISTMODEL_H

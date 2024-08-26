@@ -955,33 +955,15 @@ Rectangle {
               toolTip.open()
           }
           function getEdgeDescription(edge) {
-              var edgeSrcDst = "unknown"
-              if ( edge && edge.item ) {
-                  var edgeItem = edge.item
-                  if ( edgeItem.sourceItem &&
-                       edgeItem.sourceItem.node )
-                      edgeSrcDst = edgeItem.sourceItem.node.label
-                  edgeSrcDst += " -> "
-                  if ( edgeItem.destinationItem &&
-                       edgeItem.destinationItem.node )
-                      edgeSrcDst += edgeItem.destinationItem.node.label
-              }
-              return edgeSrcDst
+            var edgeItem = edge.item
+              return edgeItem.destinationItem.node.label+'：'+edgeItem.destinationItem.node.name
           }
           onNodeClicked: (node) => {
-              notifyUser( "Node <b>" + node.label + "</b> clicked" )
+              notifyUser( "选中用户#" + node.label + "："+node.name )
           }
-          onNodeRightClicked: (node) => { notifyUser( "Node <b>" + node.label + "</b> right clicked" ) }
-          onNodeDoubleClicked: (node) => { notifyUser( "Node <b>" + node.label + "</b> double clicked" ) }
-          onNodeMoved: (node) => { notifyUser("Node <b>" + node.label + "</b> moved") }
-          onConnectorEdgeInserted: (edge) => {
-                                       notifyUser("Edge inserted: " + getEdgeDescription(edge))
-
-                                   }
-          onConnectorRequestEdgeCreation: (src, dst) => { notifyUser("Requesting Edge creation from " + src.label + " to " + ( dst ? dst.label : "UNDEFINED" ) ) }
-         // onEdgeClicked: (edge) => { notifyUser("Edge " + edge.label + " " + getEdgeDescription(edge) + " clicked") }
-         // onEdgeDoubleClicked: (edge) => { notifyUser("Edge " + edge.label + " " + getEdgeDescription(edge) + " double clicked") }
-         // onEdgeRightClicked: (edge) => { notifyUser("Edge " + edge.label + " " + getEdgeDescription(edge) + " right clicked") }
+          onNodeRightClicked: (node) => {              notifyUser( "选中用户#" + node.label + "："+node.name )}
+          onNodeDoubleClicked: (node) => {              notifyUser( "选中用户#" + node.label + "："+node.name )}
+          onConnectorEdgeInserted: (edge) => {notifyUser("添加好友#" + getEdgeDescription(edge))}
         } // Qan.Graph: topology
       ToolTip {
           id: toolTip
@@ -1590,6 +1572,8 @@ Rectangle {
                             Material.background: Material.Red
                             onClicked: {
                                 controlPanel.infoOpen = false
+                                listView1.model = undefined
+                                listView2.model = undefined
                                 ageField.readOnly=true
                                 genderField.enabled=false
                                 schoolField.readOnly=true
@@ -1607,6 +1591,8 @@ Rectangle {
                                 infoButton.node.company = companyField.text
                                 infoButton.node.motto = mottoField.text
                                 infoButton.node = undefined
+                                graph.deleteFriendTable()
+                                graph.self = -1
                             }
                         }
                         DelayButton {
@@ -1632,6 +1618,9 @@ Rectangle {
                             }
                             onActivated: {
                                 progress = 0
+                                controlPanel.infoOpen = false
+                                listView1.model = undefined
+                                listView2.model = undefined
                                 graph.notifyUser('已删除用户#'+infoButton.node.label+':'+infoButton.node.name+'！')
                                 graph.removeNode(infoButton.node,true)
                                 ageField.readOnly=true
@@ -1640,7 +1629,8 @@ Rectangle {
                                 companyField.readOnly=true
                                 mottoField.readOnly=true
                                 infoButton.node = undefined
-                                controlPanel.infoOpen = false
+                                graph.deleteFriendTable()
+                                graph.self = -1
                             }
                         }
                     }
@@ -1669,7 +1659,22 @@ Rectangle {
                         font.bold: true
                         visible: listView1.count!=0
                     }
-
+                    footer:Label{
+                        text: '右滑以删除好友'
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        font.pixelSize: 10
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        wrapMode: Text.NoWrap
+                        font.family: "Microsoft YaHei"
+                        Layout.fillWidth: true
+                        font.styleName: "Bold"
+                        font.weight: Font.Black
+                        Layout.fillHeight: true
+                        font.bold: true
+                        visible: listView1.count!=0
+                        opacity: 0.5
+                    }
                     delegate: SwipeDelegate {
                         id: delegate1
                         width:listView1.width
@@ -1783,6 +1788,22 @@ Rectangle {
                         font.bold: true
                         visible:listView2.count!==0
                     }
+                    footer:Label{
+                        text: '左滑以添加好友'
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        font.pixelSize: 10
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        wrapMode: Text.NoWrap
+                        font.family: "Microsoft YaHei"
+                        Layout.fillWidth: true
+                        font.styleName: "Bold"
+                        font.weight: Font.Black
+                        Layout.fillHeight: true
+                        font.bold: true
+                        visible: listView2.count!=0
+                        opacity: 0.5
+                    }
                     delegate: SwipeDelegate {
                         id: delegate2
 
@@ -1827,7 +1848,7 @@ Rectangle {
                         Timer {
                             id: undoTimer2
                             interval: 1000
-                            onTriggered: listModel2.remove(index)
+                            onTriggered: listView2.model.removeRows(index,1)
                         }
 
                         swipe.onCompleted: undoTimer2.start()

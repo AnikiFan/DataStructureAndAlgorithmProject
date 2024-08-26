@@ -886,6 +886,7 @@ bool    Graph::configureEdge(qan::Edge& edge, QQmlComponent& edgeComponent, qan:
 }
 
 bool    Graph::removeEdge(qan::Node* source, qan::Node* destination) {
+    if(hasEdge(source,destination)){emit myEdgeRemoved(source,destination);}
     return super_t::remove_edge(source, destination);
 }
 bool    Graph::removeEdge(qan::Edge* edge, bool force) {

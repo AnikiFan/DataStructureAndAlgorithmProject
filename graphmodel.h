@@ -38,6 +38,7 @@ private:
     Vector<long long>* numberTable;
     void updateNumberTable();
     void updateFriendTableOnRemovingFriend(const long long);
+    void updateFriendTableOnAddingFriend(const long long);
     long long friendNum;
     long long m_self;
 
@@ -50,10 +51,10 @@ public:
     Q_INVOKABLE bool          isValid(const long long);
     Q_INVOKABLE qan::Node*    getSelectedNode();
     void onEdgeInserted(qan::Edge* edge);
-    void edgeRemoved(qan::Edge*edge);
+    void edgeRemoved(qan::Node*src,qan::Node*dst);
     void onSelectionChanged();
     Q_INVOKABLE void initFriendTable();
-    void deleteFriendTable();
+    Q_INVOKABLE void deleteFriendTable();
 
     Q_PROPERTY(FriendListModel* friendList READ getFriendListModel CONSTANT FINAL)
     Q_INVOKABLE FriendListModel*     getFriendListModel() const;

@@ -16,7 +16,7 @@ GraphModel::GraphModel(QQuickItem *parent)
     m_roleNames[MottoRole] = "motto";
     m_roleNames[ConnectivityRole] = "connectivity";
     connect(this,&GraphModel::edgeInserted,this,&GraphModel::onEdgeInserted);
-    connect(this,&GraphModel::onEdgeRemoved,this,&GraphModel::edgeRemoved);
+    connect(this,&GraphModel::myEdgeRemoved,this,&GraphModel::edgeRemoved);
     connect(this,&GraphModel::selectionChanged,this,&GraphModel::onSelectionChanged);
 
 }
@@ -31,7 +31,7 @@ QHash<int, QByteArray> GraphModel::roleNames() const
 void GraphModel::updateNumberTable()
 {
     for(long long i{0};i<G.VertexSize();i++){
-        qDebug()<<"no:"<<(*friendTable)[i].no;
+        qDebug()<<"no:"<<(*friendTable)[i].no<<"关联度"<<(*friendTable)[i].connectivity;;
         (*numberTable)[(*friendTable)[i].no]=i;
     }
     return ;
@@ -40,15 +40,45 @@ void GraphModel::updateNumberTable()
 void GraphModel::updateFriendTableOnRemovingFriend(const long long removed)
 {
     Node<long long>*p{G.E[removed].getHead()};
-    friendNum --;
     (*friendTable)[(*numberTable)[removed]].connectivity = 0;
     while(p){
-        if((*friendTable)[(*numberTable)[p->getValue()]].connectivity>0){(*friendTable)[(*numberTable)[p->getValue()]].connectivity--;}
+        if((*friendTable)[(*numberTable)[p->getValue()]].connectivity>=0){(*friendTable)[(*numberTable)[p->getValue()]].connectivity--;}
         else if((*friendTable)[(*numberTable)[p->getValue()]].connectivity==FriendNode::isFriend){(*friendTable)[(*numberTable)[removed]].connectivity++;}
         p = p->getNext();
     }
-    friendTable->sort(friendTable->begin(),friendTable->end(),[](const FriendNode &x,const FriendNode& y){return x.connectivity>y.connectivity;});
+    (*friendTable).swap((*numberTable)[removed],G.VertexCnt()-friendNum-1);
+    qDebug()<<"on deleting friend, swapping"<<(*numberTable)[removed]<<G.VertexCnt()-friendNum-1;
+    friendNum --;
+    friendTable->sort(friendTable->begin(),friendTable->begin()+G.VertexCnt()-friendNum-1,[](const FriendNode &x,const FriendNode& y){return x.connectivity>y.connectivity;});
     updateNumberTable();
+
+    qDebug()<<' ';
+    qDebug()<<" ";
+    for(long long i{0};i<G.VertexSize();i++){qDebug()<<"no:"<<(*friendTable)[i].no<<"关联度"<<(*friendTable)[i].connectivity;}
+    qDebug()<<"对应关系";
+    for(long long i{0};i<G.VertexSize();i++){qDebug()<<'#'<<i<<"->friendTable["<<(*numberTable)[i]<<']';}
+    return;
+}
+
+void GraphModel::updateFriendTableOnAddingFriend(const long long added)
+{
+    Node<long long>*p{G.E[added].getHead()};
+    (*friendTable)[(*numberTable)[added]].connectivity = FriendNode::isFriend;
+    while(p){
+        if((*friendTable)[(*numberTable)[p->getValue()]].connectivity>0){(*friendTable)[(*numberTable)[p->getValue()]].connectivity++;}
+        p = p->getNext();
+    }
+    friendNum ++;
+    qDebug()<<"on adding friend, swapping"<<(*numberTable)[added]<<G.VertexCnt()-friendNum-1;
+    (*friendTable).swap((*numberTable)[added],G.VertexCnt()-friendNum-1);
+    friendTable->sort(friendTable->begin(),friendTable->begin()+G.VertexCnt()-friendNum-1,[](const FriendNode &x,const FriendNode& y){return x.connectivity>y.connectivity;});
+    updateNumberTable();
+
+    qDebug()<<' ';
+    qDebug()<<" ";
+    for(long long i{0};i<G.VertexSize();i++){qDebug()<<"no:"<<(*friendTable)[i].no<<"关联度"<<(*friendTable)[i].connectivity;}
+    qDebug()<<"对应关系";
+    for(long long i{0};i<G.VertexSize();i++){qDebug()<<'#'<<i<<"->friendTable["<<(*numberTable)[i]<<']';}
     return;
 }
 
@@ -58,12 +88,14 @@ qan::Node *GraphModel::insertCustomNode() {
 
 void GraphModel::onNodeInserted(qan::Node &node)
 {
+    qDebug()<<"G add node:"<<node.getLabel();
     G.addNode(&node);
     return;
 }
 
 void GraphModel::onNodeRemoved(qan::Node &node)
 {
+    qDebug()<<"G delete node:"<<node.getLabel();
     G.deleteNode(node.getLabel().toLongLong());
     return;
 }
@@ -100,13 +132,16 @@ qan::Node *GraphModel::getSelectedNode()
 void GraphModel::onEdgeInserted(qan::Edge* edge)
 {
     G.addEdge(edge->get_dst()->getLabel().toLongLong(),edge->get_src()->getLabel().toLongLong(),edge);
-    qDebug()<<"edge inserted"<<get_edge_count()<<"     "<<G.EdgeCnt()<<"     "<<getNodeCount()<<"     "<<G.VertexCnt();
+    qDebug()<<"G: edge inserted"<<edge->get_dst()->getLabel().toLongLong()<<edge->get_src()->getLabel().toLongLong();
+    qDebug()<<get_edge_count()<<"     "<<G.EdgeCnt()<<"     "<<getNodeCount()<<"     "<<G.VertexCnt();
     return;
 }
 
-void GraphModel::edgeRemoved(qan::Edge *edge)
+void GraphModel::edgeRemoved(qan::Node *src,qan::Node*dst)
 {
-    G.deleteEdge(edge->getSource()->getLabel().toLongLong(),edge->getDestination()->getLabel().toLongLong());
+    G.deleteEdge(src->getLabel().toLongLong(),dst->getLabel().toLongLong());
+    qDebug()<<"G: edge removed"<<src->getLabel().toLongLong()<<dst->getLabel().toLongLong();
+    qDebug()<<get_edge_count()<<"     "<<G.EdgeCnt()<<"     "<<getNodeCount()<<"     "<<G.VertexCnt();
     return;
 }
 
@@ -132,6 +167,9 @@ void GraphModel::onSelectionChanged()
 
 void GraphModel::initFriendTable()
 {
+    qDebug()<<' ';
+    qDebug()<<' ';
+    qDebug()<<"start initializing FriendTable";
     friendTable = new Vector<FriendNode>;
     friendNum = 0;
     for(long long i{0};i<G.VertexSize();i++){
@@ -142,10 +180,7 @@ void GraphModel::initFriendTable()
         else{friendTable->push_back(FriendNode{i,0});}
     }
     (*friendTable)[self()].connectivity = FriendNode::invalid;
-    qDebug()<<G.E.length();
-    qDebug()<<G.E[self()].length();
-    qDebug()<<G.E[self()].getHead();
-
+    //这里debug时会莫名显示segment fault，但是应该没有错误
     Node<long long>* p{G.E[self()].getHead()};
     while(p){
         friendNum ++;
@@ -168,10 +203,11 @@ void GraphModel::initFriendTable()
     strangerListModel = new StrangerListModel{this,this};
     connect(friendListModel,&FriendListModel::beginUpdateStrangerList,strangerListModel,&StrangerListModel::beginReset);
     connect(friendListModel,&FriendListModel::endUpdateStrangerList,strangerListModel,&StrangerListModel::endReset);
+    connect(strangerListModel,&StrangerListModel::beginUpdateFriendList,friendListModel,&FriendListModel::beginReset);
+    connect(strangerListModel,&StrangerListModel::endUpdateFriendList,friendListModel,&FriendListModel::endReset);
     friendTable->sort(friendTable->begin(),friendTable->end(),[](const FriendNode &x,const FriendNode& y){return x.connectivity>y.connectivity;});
     numberTable = new Vector<long long>(G.VertexSize());
     for(long long i{0};i<G.VertexSize();i++){numberTable->push_back(-1);}
-    qDebug()<<"Length:"<<numberTable->length();
     updateNumberTable();
     qDebug()<<"finish initialize friend table";
     for(long long i{0};i<G.VertexSize();i++){qDebug()<<"no:"<<(*friendTable)[i].no<<"关联度"<<(*friendTable)[i].connectivity;}
@@ -186,6 +222,8 @@ void GraphModel::deleteFriendTable()
         delete friendTable;
         delete friendListModel;
         delete strangerListModel;
+        delete numberTable;
+        qDebug()<<"delete";
     }
     return;
 }
