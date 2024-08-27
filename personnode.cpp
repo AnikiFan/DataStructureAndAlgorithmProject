@@ -12,7 +12,7 @@ QQmlComponent*  PersonNode::delegate(QQmlEngine &engine, QObject* parent) noexce
     static std::unique_ptr<QQmlComponent> customRectNode_delegate;
     if (!customRectNode_delegate)
         customRectNode_delegate =
-            std::make_unique<QQmlComponent>(&engine, "qml/UntitledProject1Content/PersonNode.qml");
+            std::make_unique<QQmlComponent>(&engine, "qrc:/qt/qml/UntitledProject1Content/PersonNode.qml");
     return customRectNode_delegate.get();
 }
 
