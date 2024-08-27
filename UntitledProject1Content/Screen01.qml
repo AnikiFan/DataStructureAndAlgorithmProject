@@ -9,10 +9,7 @@ Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on
 import QtQuick 6.7
 import QtQuick.Controls 6.7
 import UntitledProject1
-import QtQuick.Studio.DesignEffects
 import QtQuick.Layouts
-import QtQuick.Studio.Components
-import QtQuick.Dialogs
 import Qt.labs.platform
 import HeapListModel
 import HeapTableModel
@@ -65,7 +62,6 @@ Rectangle {
         id: backgroundImage
         visible: mainWindow.state === "home"
         anchors.fill: parent
-        source: "qrc:/qtquickplugin/images/template_image.png"
         fillMode: Image.Stretch
     }
     Pane {

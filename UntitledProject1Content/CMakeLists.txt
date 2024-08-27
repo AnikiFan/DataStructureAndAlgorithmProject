@@ -35,5 +35,4 @@ qt6_add_resources(UntitledProject1Content UntitledProject1ContentBigResource
     VERSION 1.0
     FILES 
     "fonts/msyh.ttf"
-    "fonts/msyh.ttf"
 )
